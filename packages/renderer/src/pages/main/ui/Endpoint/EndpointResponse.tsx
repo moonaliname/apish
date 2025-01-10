@@ -1,13 +1,13 @@
+import { type OpenAPIResponse, getSchemaFromResponse } from "@apish/common";
 import cn from "clsx";
-import { OpenAPI } from "openapi-types";
+import { type OpenAPI } from "openapi-types";
 import { useRef } from "react";
 
-import { getSchemaFromComponents } from "@shared/libs/openApi/getSchemaFromComponents";
-import { type OpenAPIResponse } from "@shared/libs/openApi/types";
 import { Alert } from "@shared/ui/Alert";
 
 import { useResponseQuery } from "../../api/useResponseQuery";
 import { useUpdateResponse } from "../../api/useUpdateResponse";
+import { FieldConductor } from "./FieldConductor";
 
 interface Props {
   doc: OpenAPI.Document;
@@ -48,23 +48,37 @@ export const EndpointResponse = ({
     });
   };
 
-  const componentSchema = getSchemaFromComponents(doc, responseSchema);
+  const { data: componentSchema, error: componentSchemaError } =
+    getSchemaFromResponse(doc, responseSchema);
 
-  if ("error" in componentSchema) {
-    return (
-      <Alert>
-        {componentSchema.error} {JSON.stringify(responseSchema)}
-      </Alert>
-    );
+  if (!componentSchema) {
+    return <Alert>{componentSchemaError}</Alert>;
   }
 
   return (
     <div className={cn("flex", "flex-col", "gap-1")}>
       <form ref={formRef} onChange={handleChange}>
-        {componentSchema.message && <Alert>{componentSchema.message}</Alert>}
-        <div>{JSON.stringify(componentSchema.data)}</div>
-        <div>{response?.template}</div>
+        {componentSchema.type === "object" && (
+          <FieldConductor
+            doc={doc}
+            schema={componentSchema}
+            field=""
+            template={
+              response?.template
+                ? JSON.parse(response?.template)
+                : {
+                    id: 123,
+                    name: "Alina",
+                    content_type: "Podcast",
+                    alternative_names: ["123", "456"],
+                  }
+            }
+            title=""
+          />
+        )}
       </form>
+
+      {componentSchemaError && <Alert>{componentSchemaError}</Alert>}
     </div>
   );
 };

@@ -6,9 +6,11 @@ import { MainPage } from "@pages/main";
 
 import "./styles.css";
 
-const theme = createTheme({});
+const theme = createTheme({ scale: 0.8 });
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { refetchOnWindowFocus: false } },
+});
 
 function App() {
   return (

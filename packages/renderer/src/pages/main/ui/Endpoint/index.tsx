@@ -1,6 +1,6 @@
+import { type OpenAPIResponse } from "@apish/common";
 import { type OpenAPI } from "openapi-types";
 
-import { type OpenAPIResponse } from "@shared/libs/openApi/types";
 import { Accordion } from "@shared/ui/Accordion";
 import { Badge } from "@shared/ui/Badge";
 import { Text } from "@shared/ui/Text";
