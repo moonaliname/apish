@@ -40,13 +40,14 @@ export const SchemaDetail = () => {
                 ]) => {
                   const trimmedPath =
                     path.slice(-1) === "/" ? path.slice(0, -1) : path;
-                  const clieanedPath = trimmedPath.replace(/[{}]/g, "");
+                  const cleanedPath = trimmedPath.replace(/[{}]/g, "");
+
                   return (
                     <Endpoint
                       key={path}
                       doc={doc}
                       methods={pathSchema}
-                      path={clieanedPath}
+                      path={cleanedPath}
                     />
                   );
                 },
