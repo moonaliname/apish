@@ -6,6 +6,7 @@ node_modules
 dist
 *.local
 thumbs.db
+test-results
 
 .eslintcache
 

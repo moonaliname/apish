@@ -1,0 +1,402 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "FastAPI", "version": "0.1.0" },
+  "paths": {
+    "/todos/": {
+      "get": {
+        "tags": ["todo"],
+        "summary": "Paginated list of all todos",
+        "operationId": "get_all_todos__get",
+        "security": [{ "OAuth2PasswordBearer": [] }],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Page number",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "Page number"
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Page size",
+              "default": 50,
+              "title": "Size"
+            },
+            "description": "Page size"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Page_TodoSchema_" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["todo"],
+        "summary": "Create todo",
+        "operationId": "create_todos__post",
+        "security": [{ "OAuth2PasswordBearer": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_create_todos__post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TodoSchema" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/todos/todo_id": {
+      "put": {
+        "tags": ["todo"],
+        "summary": "Edit todo by id",
+        "operationId": "edit_todos_todo_id_put",
+        "security": [{ "OAuth2PasswordBearer": [] }],
+        "parameters": [
+          {
+            "name": "todo_id",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer", "title": "Todo Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TodoSchema" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["todo"],
+        "summary": "Delete todo by id",
+        "operationId": "delete_todos_todo_id_delete",
+        "security": [{ "OAuth2PasswordBearer": [] }],
+        "parameters": [
+          {
+            "name": "todo_id",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer", "title": "Todo Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TodoSchema" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/todos/todo_slug": {
+      "get": {
+        "tags": ["todo"],
+        "summary": "Get todo by slug",
+        "operationId": "get_one_todos_todo_slug_get",
+        "security": [{ "OAuth2PasswordBearer": [] }],
+        "parameters": [
+          {
+            "name": "todo_slug",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "title": "Todo Slug" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TodoSchema" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Body_create_todos__post": {
+        "properties": {
+          "name": { "type": "string", "title": "Name" },
+          "alternative_names": {
+            "items": { "type": "string" },
+            "type": "array",
+            "title": "Alternative Names"
+          },
+          "content_type": {
+            "type": "string",
+            "enum": [
+              "Movie",
+              "TV series",
+              "Book",
+              "Article",
+              "YouTube video",
+              "Podcast",
+              "Webnovel",
+              "Anime",
+              "K-drama",
+              "Lyrics",
+              "Other"
+            ],
+            "title": "Content Type"
+          },
+          "picture": {
+            "anyOf": [
+              { "type": "string", "format": "binary" },
+              { "type": "null" }
+            ],
+            "title": "Picture"
+          }
+        },
+        "type": "object",
+        "required": ["name", "alternative_names", "content_type"],
+        "title": "Body_create_todos__post"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": { "$ref": "#/components/schemas/ValidationError" },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Page_TodoSchema_": {
+        "properties": {
+          "items": {
+            "items": { "$ref": "#/components/schemas/TodoSchema" },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "anyOf": [
+              { "type": "integer", "minimum": 0.0 },
+              { "type": "null" }
+            ],
+            "title": "Total"
+          },
+          "page": {
+            "anyOf": [
+              { "type": "integer", "minimum": 1.0 },
+              { "type": "null" }
+            ],
+            "title": "Page"
+          },
+          "size": {
+            "anyOf": [
+              { "type": "integer", "minimum": 1.0 },
+              { "type": "null" }
+            ],
+            "title": "Size"
+          },
+          "pages": {
+            "anyOf": [
+              { "type": "integer", "minimum": 0.0 },
+              { "type": "null" }
+            ],
+            "title": "Pages"
+          }
+        },
+        "type": "object",
+        "required": ["items", "total", "page", "size"],
+        "title": "Page[TodoSchema]"
+      },
+      "TelegramSourceSchema": {
+        "properties": { "name": { "type": "string", "title": "Name" } },
+        "type": "object",
+        "required": ["name"],
+        "title": "TelegramSourceSchema"
+      },
+      "TodoSchema": {
+        "properties": {
+          "id": { "type": "integer", "title": "Id" },
+          "name": { "type": "string", "title": "Name" },
+          "content_type": {
+            "type": "string",
+            "enum": [
+              "Movie",
+              "TV series",
+              "Book",
+              "Article",
+              "YouTube video",
+              "Podcast",
+              "Webnovel",
+              "Anime",
+              "K-drama",
+              "Lyrics",
+              "Other"
+            ],
+            "title": "Content Type"
+          },
+          "alternative_names": {
+            "items": { "type": "string" },
+            "type": "array",
+            "title": "Alternative Names"
+          },
+          "season": {
+            "anyOf": [
+              { "type": "string" },
+              { "type": "integer" },
+              { "type": "null" }
+            ],
+            "title": "Season"
+          },
+          "translations": {
+            "additionalProperties": {
+              "items": { "type": "string" },
+              "type": "array"
+            },
+            "type": "object",
+            "title": "Translations"
+          },
+          "published_at": {
+            "anyOf": [
+              { "type": "string", "format": "date-time" },
+              { "type": "null" }
+            ],
+            "title": "Published At"
+          },
+          "published_by": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Published By"
+          },
+          "is_public": { "type": "boolean", "title": "Is Public" },
+          "source": {
+            "anyOf": [
+              { "$ref": "#/components/schemas/YoutubeSourceSchema" },
+              { "$ref": "#/components/schemas/TelegramSourceSchema" },
+              { "type": "null" }
+            ],
+            "title": "Source"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "content_type",
+          "alternative_names",
+          "translations",
+          "is_public"
+        ],
+        "title": "TodoSchema"
+      },
+      "Token": {
+        "properties": {
+          "access_token": { "type": "string", "title": "Access Token" },
+          "token_type": { "type": "string", "title": "Token Type" }
+        },
+        "type": "object",
+        "required": ["access_token", "token_type"],
+        "title": "Token"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": { "anyOf": [{ "type": "string" }, { "type": "integer" }] },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": { "type": "string", "title": "Message" },
+          "type": { "type": "string", "title": "Error Type" }
+        },
+        "type": "object",
+        "required": ["loc", "msg", "type"],
+        "title": "ValidationError"
+      },
+      "YoutubeSourceSchema": {
+        "properties": { "id": { "type": "integer", "title": "Id" } },
+        "type": "object",
+        "required": ["id"],
+        "title": "YoutubeSourceSchema"
+      }
+    },
+    "securitySchemes": {
+      "OAuth2PasswordBearer": {
+        "type": "oauth2",
+        "flows": { "password": { "scopes": {}, "tokenUrl": "token" } }
+      }
+    }
+  }
+}

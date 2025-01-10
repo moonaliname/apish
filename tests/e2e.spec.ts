@@ -5,6 +5,11 @@ import type { BrowserWindow } from 'electron'
 import { globSync } from 'glob'
 import { platform } from 'node:process'
 import { createHash } from 'node:crypto'
+import { join, dirname } from 'path'
+import { fileURLToPath } from 'node:url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 // Declare the types of your fixtures.
 type TestFixtures = {
@@ -15,9 +20,9 @@ type TestFixtures = {
 const test = base.extend<TestFixtures>({
   electronApp: [
     async ({}, use) => {
-      let executablePattern = 'dist/*/root{,.*}'
+      let executablePattern = 'dist/*/apish{,.*}'
       if (platform === 'darwin') {
-        executablePattern += '/Contents/*/root'
+        executablePattern += '/Contents/*/apish'
       }
 
       const [executablePath] = globSync(executablePattern)
@@ -32,7 +37,7 @@ const test = base.extend<TestFixtures>({
       await use(electronApp)
 
       // This code runs after all the tests in the worker process.
-      await electronApp.close()
+      // await electronApp.close()
     },
     { scope: 'worker', auto: true } as any,
   ],
@@ -95,27 +100,96 @@ test('Main window state', async ({ electronApp, page }) => {
 })
 
 test.describe('Main window web content', async () => {
-  test('The main window has an interactive button', async ({ page }) => {
-    const element = page.getByRole('button')
-    await expect(element).toBeVisible()
-    await expect(element).toHaveText('count is 0')
-    await element.click()
-    await expect(element).toHaveText('count is 1')
+  test('The main window has upload new swagger button', async ({ page }) => {
+    const uploadNewButton = page.getByRole('button', {
+      name: 'Upload new',
+    })
+    await expect(uploadNewButton).toBeVisible()
   })
 
-  test('The main window has a vite logo', async ({ page }) => {
-    const element = page.getByAltText('Vite logo')
-    await expect(element).toBeVisible()
-    await expect(element).toHaveRole('img')
-    const imgState = await element.evaluate(
-      (img: HTMLImageElement) => img.complete,
-    )
-    const imgNaturalWidth = await element.evaluate(
-      (img: HTMLImageElement) => img.naturalWidth,
-    )
+  test('The main window has schemas button', async ({ page }) => {
+    const schemasButton = page.getByRole('button', {
+      name: 'Schemas',
+    })
+    await expect(schemasButton).toBeVisible()
+  })
 
-    expect(imgState).toEqual(true)
-    expect(imgNaturalWidth).toBeGreaterThan(0)
+  test('The main window has not schema selected text', async ({ page }) => {
+    await expect(page.getByText(`Schema isn't selected`)).toBeVisible()
+  })
+
+  test('Should show empty list in schemas modal', async ({ page }) => {
+    const schemasButton = page.getByRole('button', {
+      name: 'Schemas',
+    })
+
+    await schemasButton.click()
+
+    await expect(page.getByText('No schemas uploaded')).toBeVisible()
+
+    await page.keyboard.press('Escape')
+  })
+
+  test('Should upload schema', async ({ page }) => {
+    const uploadNewButton = page.getByRole('button', {
+      name: 'Upload new',
+    })
+
+    await uploadNewButton.click()
+
+    await expect(page.getByText('Swagger.json *')).toBeVisible()
+
+    const fileChooserPromise = page.waitForEvent('filechooser')
+    await page.getByText('Select swagger.json file').click()
+    const fileChooser = await fileChooserPromise
+    await fileChooser.setFiles(join(__dirname, 'openapi.json'))
+
+    await page.getByPlaceholder('Schema name').fill('Todos API schema')
+
+    const submitButton = page.getByRole('button', {
+      name: 'Upload',
+      exact: true,
+    })
+    await submitButton.click()
+
+    const schemasButton = page.getByRole('button', {
+      name: 'Schemas',
+    })
+
+    await schemasButton.click()
+
+    const schemaButton = page.getByRole('button', {
+      name: 'Todos API schema',
+    })
+    await schemaButton.click()
+
+    await page.keyboard.press('Escape')
+
+    await expect(page.getByText(`Schema isn't selected`)).not.toBeVisible()
+  })
+
+  test('Proxy get request', async ({ page, request }) => {
+    const res = await request.get('http://localhost:3002/todos')
+    expect(res.status()).toBe(200)
+  })
+
+  test('Proxy post request', async ({ request }) => {
+    const res = await request.post('http://localhost:3002/todos', {
+      data: { data: 'todo' },
+    })
+    expect(res.status()).toBe(200)
+  })
+
+  test('Proxy delete request', async ({ request }) => {
+    const res = await request.delete('http://localhost:3002/todos/1')
+    expect(res.status()).toBe(200)
+  })
+
+  test('Proxy put request', async ({ request }) => {
+    const res = await request.put('http://localhost:3002/todos/1', {
+      data: { data: 'new todo' },
+    })
+    expect(res.status()).toBe(200)
   })
 })
 
