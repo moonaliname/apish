@@ -54,5 +54,12 @@ export function getSchemaFromResponse(
     )
   }
 
+  if (Object.keys(contentJSON.schema).length === 0) {
+    return successOperationResult<OpenAPISchemaObject>(
+      { type: 'string', title: 'Response' },
+      `Can't get json of Response Object content, response will be simple string`,
+    )
+  }
+
   return getNonRefSchema(doc, contentJSON.schema)
 }
