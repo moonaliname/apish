@@ -50,4 +50,13 @@ export function init() {
       return errorResponse(e, 500)
     }
   })
+
+  handle('getSchemaList', async (_event) => {
+    try {
+      const schemas = await db.table('schema').select('*')
+      return successResponse(schemas)
+    } catch (e) {
+      return errorResponse(e, 500)
+    }
+  })
 }

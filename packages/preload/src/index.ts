@@ -5,7 +5,9 @@ import type { ChannelMap } from '@apish/common'
 
 function send<K extends keyof ChannelMap>(
   channel: K,
-  message: ChannelMap[K]['request'],
+  message?: ChannelMap[K]['request'] extends undefined
+    ? never
+    : ChannelMap[K]['request'],
 ): Promise<ChannelMap[K]['response']> {
   return ipcRenderer.invoke(channel, message)
 }

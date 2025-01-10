@@ -27,4 +27,8 @@ export interface ChannelMap {
     request: ISchemaUploadRequest
     response: ISuccessResponse<ISchema> | IErrorResponse
   }
+  getSchemaList: {
+    request: undefined
+    response: ISuccessResponse<ISchema[]> | IErrorResponse
+  }
 }
