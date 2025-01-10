@@ -39,7 +39,7 @@ export const OneOfField = ({
 
         return (
           <div key={index} className="flex flex-col gap-3">
-            <Radio label={value} name={field} value={value} size="xs" />
+            <Radio label={value} name={field} value={value} />
 
             <FieldConductor
               doc={doc}

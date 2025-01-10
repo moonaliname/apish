@@ -12,7 +12,6 @@ export const NumberField = ({ schema, field, template, title }: FieldProps) => {
       min={schema.minimum || undefined}
       max={schema.maximum || undefined}
       label={title}
-      size="xs"
       defaultValue={getTypedValueFromTemplate<string | number>(
         template,
         field,

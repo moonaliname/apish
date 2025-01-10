@@ -1,13 +1,14 @@
 import type { OpenAPI } from 'openapi-types'
-import { getNonRefSchema } from '@apish/common'
+import {
+  getNonRefSchema,
+  SCHEMA_ITEMS_COUNT,
+  SCHEMA_ITEMS_COUNT_PATH,
+  SCHEMA_PAGE_SIZE,
+  SCHEMA_PAGE_SIZE_PATH,
+} from '@apish/common'
 import type { OpenAPIReferenceObject, OpenAPISchemaObject } from '@apish/common'
 import { getValueFromTemplate } from '@apish/common'
 import { faker } from '@faker-js/faker'
-
-const SETTINGS = {
-  pageSize: 5,
-  totalItems: 11,
-}
 
 type IPrimitiveField = string | number | boolean | Date | null
 type ITemplate =
@@ -220,15 +221,15 @@ export class ResponseGenerator {
 
   private getPageSizeFromTemplate(path: string): number {
     return (
-      Number(this.getValueFromTemplate(`${path}_page_size`)) ||
-      SETTINGS.pageSize
+      Number(this.getValueFromTemplate(`${path}${SCHEMA_PAGE_SIZE_PATH}`)) ||
+      SCHEMA_PAGE_SIZE
     )
   }
 
   private getTotalItemsCountFromTemplate(path: string): number {
     return (
-      Number(this.getValueFromTemplate(`${path}_total_items_count`)) ||
-      SETTINGS.totalItems
+      Number(this.getValueFromTemplate(`${path}${SCHEMA_ITEMS_COUNT_PATH}`)) ||
+      SCHEMA_ITEMS_COUNT
     )
   }
 }

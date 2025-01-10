@@ -1,4 +1,10 @@
-import { getNonRefSchema } from "@apish/common";
+import {
+  SCHEMA_ITEMS_COUNT,
+  SCHEMA_ITEMS_COUNT_PATH,
+  SCHEMA_PAGE_SIZE,
+  SCHEMA_PAGE_SIZE_PATH,
+  getNonRefSchema,
+} from "@apish/common";
 
 import { isPrimitive } from "@pages/main/libs/isPrimitive";
 import type { FieldProps } from "@pages/main/model/types";
@@ -39,11 +45,16 @@ export const ArrayField = ({
         <div className="flex gap-3 items-center">
           <span className="font-medium">{title}</span>
           <NumberInput
-            name={`${field}_count_to_send`}
+            name={`${field}${SCHEMA_ITEMS_COUNT_PATH}`}
             className="w-[70px]"
-            defaultValue={10}
-            label={`count`}
-            size="xs"
+            defaultValue={SCHEMA_ITEMS_COUNT}
+            label={`total`}
+          />
+          <NumberInput
+            name={`${field}${SCHEMA_PAGE_SIZE_PATH}`}
+            className="w-[70px]"
+            defaultValue={SCHEMA_PAGE_SIZE}
+            label={`page size`}
           />
         </div>
       }

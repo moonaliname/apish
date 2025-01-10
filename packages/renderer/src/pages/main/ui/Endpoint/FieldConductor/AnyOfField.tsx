@@ -44,7 +44,6 @@ export const AnyOfField = ({
               label={value}
               name={`${field}.anyOf.selected`}
               value={value}
-              size="xs"
               defaultChecked={selected ? value === selected : index === 0}
             />
 

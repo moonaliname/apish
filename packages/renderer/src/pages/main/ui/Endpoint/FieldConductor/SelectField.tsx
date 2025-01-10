@@ -11,7 +11,6 @@ export const SelectField = ({ schema, field, template, title }: FieldProps) => {
       data={schema.enum}
       name={field}
       label={title}
-      size="xs"
       defaultValue={getTypedValueFromTemplate<string | number>(
         template,
         field,

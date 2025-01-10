@@ -9,7 +9,6 @@ export const BooleanField = ({ field, title, template }: FieldProps) => {
     <Checkbox
       name={field}
       label={title}
-      size="xs"
       defaultChecked={getTypedValueFromTemplate<boolean>(template, field, [
         "boolean",
       ])}

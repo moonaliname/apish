@@ -13,7 +13,6 @@ export const TextField = ({ schema, field, title, template }: FieldProps) => {
         name={field}
         minLength={schema.minLength || undefined}
         maxLength={schema.maxLength || undefined}
-        size="xs"
         defaultValue={getTypedValueFromTemplate<string | number>(
           template,
           field,
