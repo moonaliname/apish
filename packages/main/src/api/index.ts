@@ -8,7 +8,7 @@ import { getResponseFromSearchPath } from '../shared/libs/searchPaths/getRespons
 import { getSchemaFromResponse } from '../shared/libs/schema/getSchemaFromResponse.js'
 import type { IEndpoint, IResponse } from '@apish/common'
 import { getConfig } from '../shared/services/config.js'
-import { handleOnce } from '../shared/libs/handle.js'
+import { handleOnce } from '../shared/libs/channelHandlers.js'
 import { errorResponse, successResponse } from '../shared/libs/response.js'
 
 export async function buildApi() {

@@ -7,7 +7,7 @@ import type {
   ISuccessResponse,
 } from '@apish/common'
 
-function send<K extends keyof ChannelMap>(
+function invoke<K extends keyof ChannelMap>(
   channel: K,
   message?: ChannelMap[K]['request'] extends undefined
     ? never
@@ -16,4 +16,13 @@ function send<K extends keyof ChannelMap>(
   return ipcRenderer.invoke(channel, message)
 }
 
-export { sha256sum, versions, send }
+function send<K extends keyof ChannelMap>(
+  channel: K,
+  message?: ChannelMap[K]['request'] extends undefined
+    ? never
+    : ChannelMap[K]['request'],
+): void {
+  return ipcRenderer.send(channel, message)
+}
+
+export { sha256sum, versions, invoke, send }

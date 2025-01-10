@@ -1,5 +1,5 @@
 import type { ChannelMap } from "@apish/common";
-import { send } from "@apish/preload";
+import { invoke } from "@apish/preload";
 import { useQuery } from "@tanstack/react-query";
 
 import { getQueryData } from "@shared/libs/getQueryData";
@@ -10,7 +10,7 @@ type Props = ChannelMap["getSchema"]["request"];
 export const useSchemaQuery = (props: Props) => {
   const queryResult = useQuery({
     queryKey: ["schema", props.id],
-    queryFn: () => send("getSchema", props),
+    queryFn: () => invoke("getSchema", props),
     enabled: !!props.id,
   });
 

@@ -25,4 +25,11 @@ function handleOnce<K extends keyof ChannelMap>(
   return ipcMain.handleOnce(channel, callback)
 }
 
-export { handle, handleOnce }
+function on<K extends keyof ChannelMap>(
+  channel: K,
+  callback: (_event: Electron.IpcMainEvent) => void,
+) {
+  return ipcMain.on(channel, callback)
+}
+
+export { handle, handleOnce, on }

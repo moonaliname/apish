@@ -1,5 +1,5 @@
 import type { ChannelMap } from "@apish/common";
-import { send } from "@apish/preload";
+import { invoke } from "@apish/preload";
 import { useQuery } from "@tanstack/react-query";
 
 import { getQueryData } from "@shared/libs/getQueryData";
@@ -10,7 +10,7 @@ type Props = ChannelMap["getResponse"]["request"];
 export const useResponseQuery = (props: Props) => {
   const queryResult = useQuery({
     queryKey: ["response", props.path, props.method, props.code],
-    queryFn: () => send("getResponse", props),
+    queryFn: () => invoke("getResponse", props),
   });
 
   const data = getQueryData("getResponse", queryResult.data);

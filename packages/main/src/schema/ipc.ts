@@ -1,7 +1,7 @@
 import SwaggerParser from '@apidevtools/swagger-parser'
 import { nanoid } from 'nanoid'
 
-import { handle } from '../shared/libs/handle.js'
+import { handle } from '../shared/libs/channelHandlers.js'
 
 import { DB } from '../shared/libs/database.js'
 import { errorResponse, successResponse } from '../shared/libs/response.js'

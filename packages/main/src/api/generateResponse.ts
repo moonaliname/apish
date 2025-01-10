@@ -133,7 +133,10 @@ export class ResponseGenerator {
 
             if (['total', 'page', 'size', 'pages'].includes(key)) {
               obj['total'] = totalItems
-              obj['page'] = 1
+              obj['page'] = faker.number.int({
+                min: 0,
+                max: Math.round(totalItems / pageSize),
+              })
               obj['size'] = pageSize
               obj['pages'] = Math.round(totalItems / pageSize)
             }

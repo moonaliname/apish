@@ -1,4 +1,4 @@
-import { send } from "@apish/preload";
+import { invoke } from "@apish/preload";
 import { useQuery } from "@tanstack/react-query";
 
 import { getQueryData } from "@shared/libs/getQueryData";
@@ -7,7 +7,7 @@ import { getQueryError } from "@shared/libs/getQueryError";
 export const useConfigQuery = () => {
   const queryResult = useQuery({
     queryKey: ["config"],
-    queryFn: () => send("getConfig"),
+    queryFn: () => invoke("getConfig"),
   });
 
   const data = getQueryData("getConfig", queryResult.data);

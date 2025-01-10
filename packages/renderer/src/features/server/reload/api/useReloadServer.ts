@@ -1,4 +1,4 @@
-import { send } from "@apish/preload";
+import { invoke } from "@apish/preload";
 import { notifications } from "@mantine/notifications";
 import { useMutation } from "@tanstack/react-query";
 
@@ -8,7 +8,7 @@ import { getQueryError } from "@shared/libs/getQueryError";
 export const useReloadServer = () => {
   const mutationResult = useMutation({
     mutationFn: () => {
-      return send("reloadServer");
+      return invoke("reloadServer");
     },
     onSuccess: (res) => {
       const error = getQueryError("reloadServer", res);

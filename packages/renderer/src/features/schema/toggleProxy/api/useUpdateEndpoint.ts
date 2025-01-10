@@ -1,5 +1,5 @@
 import type { ChannelMap } from "@apish/common";
-import { send } from "@apish/preload";
+import { invoke } from "@apish/preload";
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -15,7 +15,7 @@ export const useUpdateEndpoint = ({ endpoint }: Props) => {
 
   const mutationResult = useMutation({
     mutationFn: (data: ChannelMap["updateEndpoint"]["request"]) =>
-      send("updateEndpoint", data),
+      invoke("updateEndpoint", data),
     onSuccess: (res) => {
       const error = getQueryError("updateEndpoint", res);
 

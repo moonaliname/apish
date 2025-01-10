@@ -1,5 +1,5 @@
 import type { ChannelMap, ISchema } from "@apish/common";
-import { send } from "@apish/preload";
+import { invoke } from "@apish/preload";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { getQueryData } from "@shared/libs/getQueryData";
@@ -14,7 +14,7 @@ export const useAction = ({ onSuccess }: Props) => {
 
   const mutationResult = useMutation({
     mutationFn: (data: ChannelMap["schemaUpload"]["request"]) =>
-      send("schemaUpload", data),
+      invoke("schemaUpload", data),
     onSuccess: (res) => {
       if ("data" in res) {
         onSuccess(res.data);
