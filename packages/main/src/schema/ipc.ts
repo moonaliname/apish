@@ -5,9 +5,10 @@ import { handle } from '../shared/libs/handle.js'
 
 import { DB } from '../shared/libs/database.js'
 import { errorResponse, successResponse } from '../shared/libs/response.js'
-import { type ISchema } from '@apish/common'
+import { getSchemaFromResponse, type ISchema } from '@apish/common'
 import { getConfig } from '../shared/services/config.js'
 import { getSearchPaths } from '../shared/libs/searchPaths/getSearchPaths.js'
+import { ResponseGenerator } from '../api/generateResponse.js'
 
 export function init() {
   const db = DB.getInstance()
@@ -41,6 +42,60 @@ export function init() {
         paths: JSON.stringify(paths),
       })
 
+      const pathsArr = Object.entries(paths)
+
+      const responseGenerator = new ResponseGenerator({
+        doc: swaggerDoc,
+        template: {},
+      })
+
+      for (let [method, searchPaths] of pathsArr) {
+        for (let searchPath of searchPaths) {
+          const [endpointId] = await db.into('endpoint').insert({
+            path: searchPath.schemaPath,
+            method,
+            schema_id: id,
+          })
+          if (!searchPath.methodSchema.responses) {
+            continue
+          }
+
+          const responsesSchemas = Object.entries(
+            searchPath.methodSchema.responses,
+          )
+
+          let updatedEndpoint = false
+          for (let [code, responseSchema] of responsesSchemas) {
+            if (!updatedEndpoint) {
+              await db
+                .table('endpoint')
+                .where('id', '=', endpointId)
+                .update({ enabled_code: code })
+              updatedEndpoint = true
+            }
+
+            const { data: schemaObject, error: schemaObjectError } =
+              getSchemaFromResponse(swaggerDoc, responseSchema)
+
+            if (!schemaObject) {
+              continue
+            }
+            const response = responseGenerator.generate({
+              schema: schemaObject,
+              path: '',
+            })
+
+            await db.into('response').insert({
+              path: searchPath.schemaPath,
+              method,
+              code,
+              template: JSON.stringify(response),
+              schema_id: id,
+            })
+          }
+        }
+      }
+
       const schema = await db
         .table<ISchema>('schema')
         .first('*')
@@ -66,6 +121,10 @@ export function init() {
     try {
       const schema = await db.table('schema').where('id', '=', id).first()
 
+      if (!schema) {
+        return errorResponse(`Schema with id ${id} wasn't found`, 404)
+      }
+
       return successResponse(schema)
     } catch (e) {
       return errorResponse(e, 500)
@@ -74,6 +133,12 @@ export function init() {
 
   handle('deleteSchema', async (_event, { id }) => {
     try {
+      const schema = await db.table('schema').where('id', '=', id).first()
+
+      if (!schema) {
+        return errorResponse(`Schema with id ${id} wasn't found`, 404)
+      }
+
       await db.table('schema').where('id', '=', id).delete()
 
       return successResponse(`Schema was successfully deleted`)
@@ -119,24 +184,14 @@ export function init() {
         .where('schema_id', '=', config.current_schema_id)
         .first()
 
-      let endpointId
-      if (endpoint) {
-        endpointId = endpoint.id
-      } else {
-        const [id] = await db('endpoint').insert({
-          method: method,
-          path: path,
-          schema_id: config.current_schema_id,
-          updated_at: db.fn.now(),
-        })
-        endpointId = id
+      if (!endpoint) {
+        return errorResponse(
+          `Endpoint with path ${path} and method ${method} wasn't found`,
+          404,
+        )
       }
 
-      const newEndpoint = await db('endpoint')
-        .where('id', '=', endpointId)
-        .first()
-
-      return successResponse(newEndpoint)
+      return successResponse(endpoint)
     } catch (e) {
       return errorResponse(e, 500)
     }
@@ -159,28 +214,22 @@ export function init() {
           .where('schema_id', '=', config.current_schema_id)
           .first()
 
-        let updatedEndpointId
-        if (endpoint) {
-          await db('endpoint')
-            .where('id', '=', endpoint.id)
-            .update({
-              ...editEndpoint,
-              updated_at: db.fn.now(),
-            })
+        if (!endpoint) {
+          return errorResponse(
+            `Endpoint with path ${path} and method ${method} wasn't found`,
+            404,
+          )
+        }
 
-          updatedEndpointId = endpoint.id
-        } else {
-          const [id] = await db('endpoint').insert({
+        await db('endpoint')
+          .where('id', '=', endpoint.id)
+          .update({
             ...editEndpoint,
-            schema_id: config.current_schema_id,
             updated_at: db.fn.now(),
           })
 
-          updatedEndpointId = id
-        }
-
         const updatedEndpoint = await db('endpoint')
-          .where('id', '=', updatedEndpointId)
+          .where('id', '=', endpoint.id)
           .first()
         return successResponse(updatedEndpoint)
       } catch (e) {
@@ -205,25 +254,14 @@ export function init() {
         .where('schema_id', '=', config.current_schema_id)
         .first()
 
-      let responseId
-      if (response) {
-        responseId = response.id
-      } else {
-        const [id] = await db('response').insert({
-          method,
-          path,
-          code,
-          schema_id: config.current_schema_id,
-          updated_at: db.fn.now(),
-        })
-        responseId = id
+      if (!response) {
+        return errorResponse(
+          `Response with path ${path} and method ${method} and code ${code} wasn't found`,
+          404,
+        )
       }
 
-      const newResponse = await db('response')
-        .where('id', '=', responseId)
-        .first()
-
-      return successResponse(newResponse)
+      return successResponse(response)
     } catch (e) {
       return errorResponse(e, 500)
     }
@@ -247,28 +285,22 @@ export function init() {
           .where('schema_id', '=', config.current_schema_id)
           .first()
 
-        let updatedResponseId
-        if (response) {
-          await db('response')
-            .where('id', '=', response.id)
-            .update({
-              ...editResponse,
-              updated_at: db.fn.now(),
-            })
+        if (!response) {
+          return errorResponse(
+            `Response with path ${path} and method ${method} and code ${code} wasn't found`,
+            404,
+          )
+        }
 
-          updatedResponseId = response.id
-        } else {
-          const [id] = await db('response').insert({
+        await db('response')
+          .where('id', '=', response.id)
+          .update({
             ...editResponse,
-            schema_id: config.current_schema_id,
             updated_at: db.fn.now(),
           })
 
-          updatedResponseId = id
-        }
-
         const updatedResponse = await db('response')
-          .where('id', '=', updatedResponseId)
+          .where('id', '=', response.id)
           .first()
         return successResponse(updatedResponse)
       } catch (e) {
