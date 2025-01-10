@@ -9,7 +9,7 @@ import {
 } from '@apish/common'
 import type { OpenAPIReferenceObject, OpenAPISchemaObject } from '@apish/common'
 import { getValueFromTemplate } from '@apish/common'
-import { fa, faker } from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 
 type IPrimitiveField = string | number | boolean | Date | null
 type ITemplate =
@@ -91,11 +91,11 @@ export class ResponseGenerator {
       const obj: ITemplate = {}
 
       if ('additionalProperties' in schema) {
-        if (typeof schema.additionalProperties == 'boolean') {
-          return true
-        }
-
         const templateValue = this.getValueFromTemplate(path)
+
+        if (typeof schema.additionalProperties == 'boolean') {
+          return templateValue ?? {}
+        }
 
         let key = templateValue
           ? Object.keys(templateValue)[0]
@@ -105,6 +105,7 @@ export class ResponseGenerator {
           schema: schema.additionalProperties,
           path: `${path}.${key}`,
         })
+
         if (
           newValue &&
           typeof newValue == 'object' &&

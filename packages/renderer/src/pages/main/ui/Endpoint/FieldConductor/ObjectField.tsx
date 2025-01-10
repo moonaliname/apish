@@ -27,10 +27,7 @@ export const ObjectField = ({
   FieldConductor,
   onFieldChange,
 }: Props) => {
-  if (
-    schema.additionalProperties &&
-    typeof schema.additionalProperties !== "boolean"
-  ) {
+  if (schema.additionalProperties) {
     return (
       <JsonField
         key={field}
