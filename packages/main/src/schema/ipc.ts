@@ -6,8 +6,8 @@ import { handle } from '../shared/libs/handle.js'
 import { DB } from '../shared/libs/database.js'
 import { errorResponse, successResponse } from '../shared/libs/response.js'
 import { type ISchema } from '@apish/common'
-import { preparePaths } from '../shared/libs/preparePaths.js'
 import { getConfig } from '../shared/services/config.js'
+import { getSearchPaths } from '../shared/libs/searchPaths/getSearchPaths.js'
 
 export function init() {
   const db = DB.getInstance()
@@ -33,7 +33,7 @@ export function init() {
       if (existingSchema) {
         name = `${name}_${nanoid()}`
       }
-      const paths = preparePaths(swaggerDoc.paths)
+      const paths = getSearchPaths(swaggerDoc.paths)
 
       const [id] = await db.into('schema').insert({
         name,
@@ -67,6 +67,16 @@ export function init() {
       const schema = await db.table('schema').where('id', '=', id).first()
 
       return successResponse(schema)
+    } catch (e) {
+      return errorResponse(e, 500)
+    }
+  })
+
+  handle('deleteSchema', async (_event, { id }) => {
+    try {
+      await db.table('schema').where('id', '=', id).delete()
+
+      return successResponse(`Schema was successfully deleted`)
     } catch (e) {
       return errorResponse(e, 500)
     }

@@ -64,6 +64,12 @@ export interface ChannelMap {
     }
     response: ISchema
   }
+  deleteSchema: {
+    request: {
+      id: number
+    }
+    response: string
+  }
   getConfig: {
     request: undefined
     response: IConfig

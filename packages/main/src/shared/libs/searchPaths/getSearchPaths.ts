@@ -1,5 +1,6 @@
 import type { OpenAPI } from 'openapi-types'
 import type { ISearchPaths } from './types.js'
+import { convertSearchPathToSchemaPath } from './convertSearchPathToSchemaPath.js'
 
 export function getSearchPaths(paths: OpenAPI.Document['paths']): ISearchPaths {
   try {
@@ -33,6 +34,7 @@ export function getSearchPaths(paths: OpenAPI.Document['paths']): ISearchPaths {
         }
 
         result[methodKey].push({
+          schemaPath: convertSearchPathToSchemaPath(segments),
           segments,
           methodSchema: methodSchema,
           paramTypes,

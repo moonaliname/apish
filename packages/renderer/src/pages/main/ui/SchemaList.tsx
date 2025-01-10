@@ -1,5 +1,7 @@
 import type { ISchema } from "@apish/common";
 
+import { Delete } from "@features/schema/delete";
+
 import { Alert } from "@shared/ui/Alert";
 import { Button } from "@shared/ui/Button";
 
@@ -35,6 +37,10 @@ export const SchemaList = ({ onSelect }: Props) => {
                 >
                   {schema.name}
                 </Button>
+                <Delete
+                  schema={{ id: schema.id, name: schema.name }}
+                  onSuccess={() => {}}
+                />
               </li>
             );
           })}

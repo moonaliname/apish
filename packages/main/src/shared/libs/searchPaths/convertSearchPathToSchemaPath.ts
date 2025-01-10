@@ -1,6 +1,6 @@
 import { ISearchPath } from './types.js'
 
-export const covertSearchPathToSchemaPath = (
+export const convertSearchPathToSchemaPath = (
   searchPathSegments?: ISearchPath['segments'],
 ): string => {
   if (!searchPathSegments) return ''
