@@ -1,3 +1,7 @@
 export { getNonRefSchema } from './getNonRefSchema.js'
 export { getSchemaFromResponse } from './getSchemaFromResponse.js'
+export {
+  getValueFromTemplate,
+  getTypedValueFromTemplate,
+} from './getValueFromTemplate.js'
 export type * from './types.js'
