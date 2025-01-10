@@ -1,5 +1,5 @@
 {
-  "name": "@vite-electron-builder/electron-versions",
+  "name": "@apish/electron-versions",
   "type": "module",
   "files": [],
   "main": "./index.js",

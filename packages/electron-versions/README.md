@@ -1,4 +1,4 @@
-# @vite-electron-builder/electron-versions
+# @apish/electron-versions
 
 ## Description
 
@@ -9,7 +9,7 @@ A set of helper functions to get the versions of internal components bundled wit
 To install this package, use the following command:
 
 ```bash
-npm install -D @vite-electron-builder/electron-versions
+npm install -D @apish/electron-versions
 ```
 
 ## Usage
@@ -17,20 +17,14 @@ npm install -D @vite-electron-builder/electron-versions
 Import the functions you need from the package:
 
 ```javascript
-import {
-  getElectronVersions,
-  getChromeVersion,
-  getNodeVersion,
-  getChromeMajorVersion,
-  getNodeMajorVersion
-} from '@vite-electron-builder/electron-versions';
+import { getElectronVersions, getChromeVersion, getNodeVersion, getChromeMajorVersion, getNodeMajorVersion } from "@apish/electron-versions";
 
 // Example usage
-console.log('Electron Versions:', getElectronVersions());
-console.log('Chromium Version:', getChromeVersion());
-console.log('Node.js Version:', getNodeVersion());
-console.log('Chromium Major Version:', getChromeMajorVersion());
-console.log('Node.js Major Version:', getNodeMajorVersion());
+console.log("Electron Versions:", getElectronVersions());
+console.log("Chromium Version:", getChromeVersion());
+console.log("Node.js Version:", getNodeVersion());
+console.log("Chromium Major Version:", getChromeMajorVersion());
+console.log("Node.js Major Version:", getNodeMajorVersion());
 ```
 
 ## API
@@ -46,7 +40,7 @@ console.log('Node.js Major Version:', getNodeMajorVersion());
 An example of how you might use this package in a Vite configuration:
 
 ```javascript
-import { getChromeMajorVersion } from '@vite-electron-builder/electron-versions';
+import { getChromeMajorVersion } from "@apish/electron-versions";
 
 export default {
   build: {

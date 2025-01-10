@@ -28,7 +28,7 @@ jobs:
           node-version: 'latest'
 
       - run: npm run create-renderer -- -- --template ${{inputs.renderer-template}}
-      - run: npm start --workspace @vite-electron-builder/integrate-renderer
+      - run: npm start --workspace @apish/integrate-renderer
       - name: Cache Dependencies
         uses: actions/cache@v4
         with:

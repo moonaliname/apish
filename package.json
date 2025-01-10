@@ -1,14 +1,9 @@
 {
-  "name": "root",
-  "description": "Secure boilerplate for Electron app based on Vite",
+  "name": "apish",
+  "description": "Application for mocking API, using swagger.json",
   "version": "2.0.0",
   "private": true,
   "type": "module",
-  "author": {
-    "email": "kozackunisoft@gmail.com",
-    "name": "Alex Kozack",
-    "url": "https://kozack.me"
-  },
   "main": "packages/entry-point.js",
   "workspaces": [
     "packages/*"
@@ -21,10 +16,7 @@
     "compile": "npm run build && electron-builder build --config electron-builder.mjs",
     "test": "npx playwright test ./tests/e2e.spec.ts",
     "start": "node packages/dev-mode.js",
-    "typecheck": "npm run typecheck -ws --if-present",
-    "create-renderer": "cd packages && npm create vite@latest renderer",
-    "integrate-renderer": "npm start --workspace @vite-electron-builder/integrate-renderer",
-    "init": "npm run create-renderer && npm run integrate-renderer && npm install"
+    "typecheck": "npm run typecheck -ws --if-present"
   },
   "devDependencies": {
     "@npmcli/map-workspaces": "4.0.1",
@@ -37,6 +29,6 @@
     "playwright": "1.48.2"
   },
   "dependencies": {
-    "@vite-electron-builder/main": "*"
+    "@apish/main": "*"
   }
 }

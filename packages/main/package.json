@@ -1,5 +1,5 @@
 {
-  "name": "@vite-electron-builder/main",
+  "name": "@apish/main",
   "type": "module",
   "scripts": {
     "build": "vite build",
@@ -12,12 +12,12 @@
     }
   },
   "dependencies": {
-    "@vite-electron-builder/preload": "*",
-    "@vite-electron-builder/renderer": "*",
+    "@apish/preload": "*",
+    "@apish/renderer": "*",
     "electron-updater": "6.3.9"
   },
   "devDependencies": {
-    "@vite-electron-builder/electron-versions": "*",
+    "@apish/electron-versions": "*",
     "vite": "5.4.10"
   }
 }

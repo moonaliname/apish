@@ -1,35 +1,12 @@
-> [!Important]
-> This project is maintained by developer from Ukraine 🇺🇦
->
-> I do my best, but due to Russia's ongoing full-scale invasion of Ukraine, I barely have the energy to support open source projects.
->
-> If my work has been useful to you, please consider [supporting Ukraine](https://stand-with-ukraine.pp.ua/) or [me personally](https://send.monobank.ua/6SmojkkR9i). Even your **$1** has an impact!
+# Apish
 
-![IMG_0875](https://github.com/user-attachments/assets/590de304-e2c4-4935-9814-c18ade52fd8e)
+This project is based on **[this template](https://github.com/cawa-93/vite-electron-builder)**.
+The main purpose of this app is to ease the process of developing frontend applications, by uploading swagger schema and mocking responses.
+You might ask: "Dude, what about MSW?" and I'll answer: "Sure thing, but I have UI."
 
-# Vite Electron Builder Boilerplate
-
-This is a template for secure electron applications. Written following the latest safety requirements, recommendations
-and best practices.
-
-## Get started
-
-Follow these steps to get started with the template:
-
-1. Click the **[Use this template](https://github.com/cawa-93/vite-electron-builder/generate)** button (you must be logged in) or just clone this repo.
-2. Go to project folder and run `npm run init`.
-3. Start application in development mode by `npm start`.
-4. Compile executable by `npm run compile`.
-
-That's all you need. 😉
-
-❤️ **If you like this template, give a ⭐ or [send support](https://www.buymeacoffee.com/kozack/)!**
+❤️ **If you like this app, give a ⭐**
 
 ## Features
-
-### Lightweight
-
-When designing this template, I tried to keep ше minimal, using the platform's native features to the maximum and minimizing the number of third-party dependencies.
 
 ### Electron [![Electron version](https://img.shields.io/github/package-json/dependency-version/cawa-93/vite-electron-builder/dev/electron?label=%20)][electron]
 
@@ -40,7 +17,6 @@ When designing this template, I tried to keep ше minimal, using the platform's
 ### Automatic tests
 
 - End-to-end are placed in the root [`tests`](tests) directory and use [playwright].
-- You may write any unit tests inside each package and use whatever you ~~want~~ need.
 
 ### Continuous Integration
 
@@ -55,38 +31,16 @@ the [`ci`](.github/workflows/ci.yml) workflow starts to create and deploy a new 
 ## Project Structure
 
 The project is designed as monorepo where each part of the application is an independent package.
-Each package could have own tech stack, tests, dependencies, frameworks, etc.
-All internal names are prefixed by `@vite-electron-builder/*`.
-There are no technical reasons for this.
-It's just for you to make it easier to understand the architecture.
-
-Initially, the repository contains only a few packages.4
+All internal names are prefixed by `@apish/*`.
 
 ### Packages with building tools:
 
-- [`packages/integrate-renderer`](packages/integrate-renderer) - A helper package that is not included in the runtime.
-  It is used in `npm run init` to configure a new interface package.
 - [`packages/electron-versions`](packages/electron-versions) - A set of helper functions to get the versions of internal components bundled within Electron.
 
 ### Packages with app logic:
 
 - [`packages/main`](packages/main) - Implementation of Electron's [**main script**](https://www.electronjs.org/docs/tutorial/quick-start#create-the-main-script-file).
 - [`packages/preload`](packages/preload) - Implementation of Electron's [**preload scripts**](https://www.electronjs.org/docs/latest/tutorial/tutorial-preload).
-
-### Renderer is not included
-
-As you may have noticed, the repository does **not** contain a package that implements the application interface.
-The reason is that since the entire application is a mono-repository,
-you can use any web application based on any framework or bundler as a package for the interface.
-
-There is only one requirement: the template expects to import renderer by `@vite-electron-builder/renderer` name.
-
-> [!TIP]
-> You can create new renderer package in interactive mode by `npm run init`.
-
-> [!NOTE]
-> If you are using a bundler other than vite,
-> you may need to slightly change the [dev-mode.js](packages/dev-mode.js) script to run it correctly.
 
 ## How It works
 
@@ -106,13 +60,9 @@ this.
 
 ### Working with third-party dependencies
 
-Because the `renderer` works and builds like a _regular web application_, you can only use dependencies that support the
-browser or compile to a browser-friendly format.
+Because the `renderer` works and builds like a _regular web application_, you can only use dependencies that support the browser or compile to a browser-friendly format.
 
-This means that in the `renderer` you are free to use any frontend dependencies such as Vue, React, lodash, axios and so
-on. However, you _CANNOT_ use any native Node.js APIs, such as, `systeminformation`. These APIs are _only_ available in
-a Node.js runtime environment and will cause your application to crash if used in the `renderer` layer. Instead, if you
-need access to Node.js runtime APIs in your frontend, export a function form the `preload` package.
+However, you _CANNOT_ use any native Node.js APIs, such as, `systeminformation`. These APIs are _only_ available in a Node.js runtime environment and will cause your application to crash if used in the `renderer` layer. Instead, if you need access to Node.js runtime APIs in your frontend, export a function form the `preload` package.
 
 All dependencies that require Node.js api can be used in
 the [`preload` script](https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts).
@@ -132,16 +82,18 @@ so you don't need to worry about it.
 
 ```ts
 // preload/src/index.ts
-import { readFile } from "node:fs/promises";
+import { readFile } from 'node:fs/promises'
 
 // Encapsulate types if you use typescript
 interface UserData {
-  prop: string;
+  prop: string
 }
 
 // Will call `electron.contextBridge.exposeInMainWorld('getUserData', getUserData)`
 export function getUserData(): Promise<UserData> {
-  return readFile("/path/to/file/in/user/filesystem.json", { encoding: "utf8" }).then(JSON.parse);
+  return readFile('/path/to/file/in/user/filesystem.json', {
+    encoding: 'utf8',
+  }).then(JSON.parse)
 }
 ```
 
@@ -149,11 +101,11 @@ Now you can import and call the method in renderer
 
 ```ts
 // renderer/src/anywere/component.ts
-import { getUserData } from "@vite-electron-builder/preload";
+import { getUserData } from '@apish/preload'
 
 // Method will came from exposed context
 // const userData = globalThis['getUserData']
-const userData = await getUserData();
+const userData = await getUserData()
 ```
 
 > [!TIP]
@@ -162,8 +114,7 @@ const userData = await getUserData();
 
 ### Working with Electron API
 
-Although the preload has access to all of Node.js API, it **still runs in the BrowserWindow context**, so only limited
-electron modules are available in it.
+Although the preload has access to all of Node.js API, it **still runs in the BrowserWindow context**, so only limited electron modules are available in it.
 
 > [!TIP]
 > Check the [electron docs](https://www.electronjs.org/ru/docs/latest/api/clipboard) for the full list of available
@@ -286,32 +237,7 @@ Runs the `typecheck` command in all workspaces if present.
 
 ---
 
-```sh
-npm run create-renderer
-```
-
-Initializes a new Vite project named `renderer`. Basically same as `npm create vite`.
-
----
-
-```sh
-npm run integrate-renderer
-```
-
-Starts the integration process of the renderer using the Vite Electron builder.
-
----
-
-```sh
-npm run init
-```
-
-Set up the initial environment by creating a new renderer, integrating it, and installing the necessary packages.
-
-## Contribution
-
-See [Contributing Guide](contributing.md).
-
+[vite-electron-builder]: https://github.com/cawa-93/vite-electron-builder
 [vite]: https://github.com/vitejs/vite/
 [electron]: https://github.com/electron/electron
 [electron-builder]: https://github.com/electron-userland/electron-builder

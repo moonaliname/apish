@@ -1,5 +1,5 @@
-import type {AppInitConfig} from './AppInitConfig.js';
-import {BrowserWindow} from 'electron';
+import type { AppInitConfig } from './AppInitConfig.js'
+import { BrowserWindow } from 'electron'
 
 export function createWindowManager({
   preload,
@@ -15,7 +15,7 @@ export function createWindowManager({
         webviewTag: false, // The webview tag is not recommended. Consider alternatives like an iframe or Electron's BrowserView. @see https://www.electronjs.org/docs/latest/api/webview-tag#warning
         preload: preload.path,
       },
-    });
+    })
 
     /**
      * If the 'show' property of the BrowserWindow's constructor is omitted from the initialization options,
@@ -27,36 +27,36 @@ export function createWindowManager({
      * @see https://github.com/electron/electron/issues/25012 for the afford mentioned issue.
      */
     browserWindow.on('ready-to-show', () => {
-      browserWindow?.show();
-    });
+      browserWindow?.show()
+    })
 
     if (renderer instanceof URL) {
-      await browserWindow.loadURL(renderer.href);
+      await browserWindow.loadURL(renderer.href)
     } else {
-      await browserWindow.loadFile(renderer.path);
+      await browserWindow.loadFile(renderer.path)
     }
 
-    return browserWindow;
+    return browserWindow
   }
 
   /**
    * Restore an existing BrowserWindow or Create a new BrowserWindow.
    */
   async function restoreOrCreateWindow() {
-    let window = BrowserWindow.getAllWindows().find(w => !w.isDestroyed());
+    let window = BrowserWindow.getAllWindows().find((w) => !w.isDestroyed())
 
     if (window === undefined) {
-      window = await createWindow();
+      window = await createWindow()
     }
 
     if (window.isMinimized()) {
-      window.restore();
+      window.restore()
     }
 
-    window.focus();
+    window.focus()
   }
 
   return {
     restoreOrCreateWindow,
-  };
+  }
 }

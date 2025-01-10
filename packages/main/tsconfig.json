@@ -12,7 +12,7 @@
     "baseUrl": ".",
     "paths": {
       "/@/*": ["./src/*"],
-      "@vite-electron-builder/*": ["../*"]
+      "@apish/*": ["../*"]
     }
   },
   "include": ["src/**/*.ts", "../../types/**/*.d.ts"],
