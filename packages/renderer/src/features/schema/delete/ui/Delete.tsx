@@ -17,12 +17,8 @@ export const Delete = ({ schema, ...rest }: Props) => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      name={`delete schema ${schema.name}`}
-      className="flex flex-col gap-2"
-    >
-      <Button type="submit" className="mt-1">
+    <form onSubmit={handleSubmit} name={`Delete schema ${schema.name}`}>
+      <Button type="submit" color="red" variant="subtle">
         Delete
       </Button>
     </form>
