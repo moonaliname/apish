@@ -1,4 +1,4 @@
-import { type ITemplate } from './types.js'
+import type { ITemplate } from './types.js'
 
 export const getValueFromTemplate = (
   template: ITemplate,
@@ -8,7 +8,7 @@ export const getValueFromTemplate = (
     if (Array.isArray(template)) {
       return template
     } else if (typeof template === 'object') {
-      let result = template
+      let result: ITemplate = template
       const segments = path.replace(/\[(\d+)]/g, '.$1').split('.')
       for (let key of segments) {
         if (typeof result === 'object' && result !== null && key in result) {

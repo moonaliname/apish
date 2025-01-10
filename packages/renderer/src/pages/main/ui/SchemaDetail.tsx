@@ -38,12 +38,14 @@ export const SchemaDetail = () => {
                   string,
                   Record<string, OpenAPI.Operation>,
                 ]) => {
+                  const trimmedPath =
+                    path.slice(-1) === "/" ? path.slice(0, -1) : path;
                   return (
                     <Endpoint
                       key={path}
                       doc={doc}
                       methods={pathSchema}
-                      path={path}
+                      path={trimmedPath}
                     />
                   );
                 },

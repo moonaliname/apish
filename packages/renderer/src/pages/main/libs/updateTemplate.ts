@@ -1,4 +1,4 @@
-import { IPrimitiveField, ITemplate } from "@apish/common";
+import { IPrimitiveField, ITemplate, ITemplateObject } from "@apish/common";
 
 export const updateTemplate = (
   template: ITemplate,
@@ -21,7 +21,7 @@ export const updateTemplate = (
           valuePath ? `${valuePath}.${key}` : key,
         );
         return copy;
-      }, {} as ITemplate);
+      }, {} as ITemplateObject);
     } else {
       return obj;
     }
