@@ -1,5 +1,5 @@
 import {
-  IPrimitiveField,
+  type IPrimitiveField,
   getNonRefSchema,
   getSchemaVariantPath,
   getValueFromTemplate,
@@ -41,8 +41,7 @@ export const AnyOfField = ({
         }
 
         const type = getSchemaType(optionSchema);
-        const isPrimitiveField = isPrimitive(optionSchema);
-        const value: IPrimitiveField = isPrimitiveField
+        const value: IPrimitiveField = isPrimitive(optionSchema)
           ? (type as IPrimitiveField)
           : (optionSchema.title ?? "");
 

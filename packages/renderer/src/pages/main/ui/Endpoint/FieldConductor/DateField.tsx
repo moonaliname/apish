@@ -8,15 +8,15 @@ export const DateField = ({
   title,
   onFieldChange,
 }: FieldProps) => {
+  const value = getTypedValueFromTemplate<string>(template, field, ["string"]);
+
   return (
     <input
       type="date"
       className="w-[180px]"
       name={field}
       title={title}
-      defaultValue={getTypedValueFromTemplate<string>(template, field, [
-        "string",
-      ])}
+      defaultValue={value}
       onChange={(e) => {
         onFieldChange(field, e.target.value);
       }}

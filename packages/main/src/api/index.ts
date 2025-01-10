@@ -7,7 +7,7 @@ import { getSearchPathByRequest } from '../shared/libs/searchPaths/getSearchPath
 import { DB } from '../shared/libs/database.js'
 import { getResponseFromSearchPath } from '../shared/libs/searchPaths/getResponseFromSearchPath.js'
 import { getSchemaFromResponse } from '../shared/libs/schema/getSchemaFromResponse.js'
-import type { IEndpoint } from '@apish/common'
+import type { IEndpoint, IResponse } from '@apish/common'
 
 const TARGET = 'http://127.0.0.1:3001'
 
@@ -67,16 +67,28 @@ export async function buildApi() {
         return reply.from(request.raw.url)
       }
 
+      const response = await db
+        .table('response')
+        .where('method', '=', method.toLowerCase())
+        .where('path', '=', searchPath?.schemaPath ?? '')
+        .where('code', '=', endpoint.enabled_code)
+        .where('schema_id', '=', schema.id)
+        .first<IResponse>()
+
+      const template = response?.template ? JSON.parse(response.template) : {}
+
       const responseGenerator = new ResponseGenerator({
         doc: JSON.parse(schema.doc),
-        template: {},
+        template,
+        mode: 'response',
       })
-      const response = responseGenerator.generate({
+
+      const generatedResponse = responseGenerator.generate({
         schema: schemaObject,
         path: '',
       })
 
-      return reply.status(200).send(response)
+      return reply.status(200).send(generatedResponse)
     } else {
       reply
         .status(404)

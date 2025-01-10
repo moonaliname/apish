@@ -1,9 +1,8 @@
 import {
-  SCHEMA_ITEMS_COUNT,
   SCHEMA_ITEMS_COUNT_PATH,
-  SCHEMA_PAGE_SIZE,
   SCHEMA_PAGE_SIZE_PATH,
   getNonRefSchema,
+  getTypedValueFromTemplate,
 } from "@apish/common";
 
 import { isPrimitive } from "@pages/main/libs/isPrimitive";
@@ -48,19 +47,33 @@ export const ArrayField = ({
           <NumberInput
             name={`${field}${SCHEMA_ITEMS_COUNT_PATH}`}
             className="w-[70px]"
-            defaultValue={SCHEMA_ITEMS_COUNT}
+            defaultValue={getTypedValueFromTemplate<number>(
+              template,
+              `${field}_apish_items_settings.${SCHEMA_ITEMS_COUNT_PATH}`,
+              ["number"],
+            )}
             label={`total`}
             onChange={(value) => {
-              onFieldChange(`${field}${SCHEMA_ITEMS_COUNT_PATH}`, value);
+              onFieldChange(
+                `${field}_apish_items_settings.${SCHEMA_ITEMS_COUNT_PATH}`,
+                value,
+              );
             }}
           />
           <NumberInput
             name={`${field}${SCHEMA_PAGE_SIZE_PATH}`}
             className="w-[70px]"
-            defaultValue={SCHEMA_PAGE_SIZE}
+            defaultValue={getTypedValueFromTemplate<number>(
+              template,
+              `${field}_apish_items_settings.${SCHEMA_PAGE_SIZE_PATH}`,
+              ["number"],
+            )}
             label={`page size`}
             onChange={(value) => {
-              onFieldChange(`${field}${SCHEMA_PAGE_SIZE_PATH}`, value);
+              onFieldChange(
+                `${field}_apish_items_settings.${SCHEMA_PAGE_SIZE_PATH}`,
+                value,
+              );
             }}
           />
         </div>

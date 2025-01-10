@@ -24,24 +24,30 @@ type ITemplate =
 export class ResponseGenerator {
   doc: OpenAPI.Document
   template: ITemplate
+  mode: 'response' | 'template'
 
   constructor({
     doc,
     template,
+    mode = 'template',
   }: {
     doc: OpenAPI.Document
     template: ITemplate
+    mode?: 'response' | 'template'
   }) {
     this.doc = doc
     this.template = template
+    this.mode = mode
   }
 
   generate({
     schema: initialSchema,
     path,
+    pagination,
   }: {
     schema?: OpenAPISchemaObject | OpenAPIReferenceObject
     path: string
+    pagination?: { totalItems: number; pageSize: number }
   }): ITemplate {
     const { data: schema } = getNonRefSchema(this.doc, initialSchema)
 
@@ -62,7 +68,8 @@ export class ResponseGenerator {
         path,
       })
     } else if (schema.type === 'array') {
-      const pageSize = this.getPageSizeFromTemplate(path)
+      const pageSize =
+        pagination?.pageSize ?? this.getPageSizeFromTemplate(path)
 
       const items: Array<ITemplate> = []
       for (let i = 0; i < pageSize; i++) {
@@ -73,7 +80,13 @@ export class ResponseGenerator {
           }),
         )
       }
-      return items
+      return {
+        apish_items: items,
+        apish_items_settings: {
+          [SCHEMA_ITEMS_COUNT_PATH]: this.getTotalItemsCountFromTemplate(path),
+          [SCHEMA_PAGE_SIZE_PATH]: pageSize,
+        },
+      }
     } else if (schema.type === 'object') {
       const obj: ITemplate = {}
 
@@ -81,49 +94,73 @@ export class ResponseGenerator {
         if (typeof schema.additionalProperties == 'boolean') {
           return {}
         }
-        const templateValue = this.getValueFromTemplate(path)
 
         const key = faker.lorem.word()
-        obj[key] =
-          templateValue !== undefined
-            ? templateValue
-            : this.generate({
-                schema: schema.additionalProperties,
-                path: path,
-              })
+        const newValue = this.generate({
+          schema: schema.additionalProperties,
+          path,
+        })
+        if (
+          newValue &&
+          typeof newValue == 'object' &&
+          'apish_items' in newValue
+        ) {
+          obj[key] = newValue['apish_items']
+
+          if (this.mode === 'template') {
+            obj[`${key}_apish_items_settings`] =
+              newValue['apish_items_settings']
+          }
+        } else {
+          obj[key] = newValue
+        }
       } else {
         const isPageSchema = this.getIsPageSchema(schema.properties)
 
         for (let key in schema.properties) {
-          const propertyPath = path ? `${path}.${key}` : key
-          const templateValue = this.getValueFromTemplate(propertyPath)
+          const propertyPath = this.getFullKeyPath(path, key)
 
           if (isPageSchema) {
-            const totalItems = this.getTotalItemsCountFromTemplate(path)
-            const pageSize = this.getPageSizeFromTemplate(path)
+            const itemsKeyPath = this.getFullKeyPath(path, 'items')
+            const totalItems = this.getTotalItemsCountFromTemplate(itemsKeyPath)
+            const pageSize = this.getPageSizeFromTemplate(itemsKeyPath)
 
-            obj['total'] = totalItems
-            obj['page'] = 1
-            obj['size'] = pageSize
-            obj['pages'] = Math.round(totalItems / pageSize)
+            if (['total', 'page', 'size', 'pages'].includes(key)) {
+              obj['total'] = totalItems
+              obj['page'] = 1
+              obj['size'] = pageSize
+              obj['pages'] = Math.round(totalItems / pageSize)
+            }
+          }
 
-            if (!['total', 'page', 'size', 'pages'].includes(key)) {
-              obj[key] =
-                templateValue !== undefined
-                  ? templateValue
-                  : this.generate({
-                      schema: schema.properties[key],
-                      path: propertyPath,
-                    })
+          let pagination
+          if (isPageSchema && key === 'items') {
+            const itemsKeyPath = this.getFullKeyPath(path, 'items')
+
+            pagination = {
+              totalItems: this.getTotalItemsCountFromTemplate(itemsKeyPath),
+              pageSize: this.getPageSizeFromTemplate(itemsKeyPath),
+            }
+          }
+
+          const newValue = this.generate({
+            schema: schema.properties[key],
+            path: propertyPath,
+            pagination,
+          })
+          if (
+            newValue &&
+            typeof newValue == 'object' &&
+            'apish_items' in newValue
+          ) {
+            obj[key] = newValue['apish_items']
+
+            if (this.mode === 'template') {
+              obj[`${key}_apish_items_settings`] =
+                newValue['apish_items_settings']
             }
           } else {
-            obj[key] =
-              templateValue !== undefined
-                ? templateValue
-                : this.generate({
-                    schema: schema.properties[key],
-                    path: propertyPath,
-                  })
+            obj[key] = newValue
           }
         }
       }
@@ -146,8 +183,9 @@ export class ResponseGenerator {
     schema: Exclude<OpenAPISchemaObject[T], undefined>
     path: string
   }): ITemplate {
-    const fullPath = `${path}.${key}.selected`
-    const selected = this.getValueFromTemplate(path)
+    const fullPath = `${path}.${key}`
+    const selected = this.getValueFromTemplate(`${fullPath}.selected`)
+
     const result: Record<string, { selected?: string } & Record<string, any>> =
       {
         [key]: {
@@ -171,14 +209,29 @@ export class ResponseGenerator {
         result[key].selected = variantPath
       }
 
-      if (optionSchema?.title && optionSchema?.title === selected) {
+      if (variantPath === selected) {
         result[key].selected = selected
       }
 
-      result[key][variantPath] = this.generate({
+      const variantValue = this.generate({
         schema: optionSchema,
-        path: fullPath,
+        path: `${fullPath}.${variantPath}`,
       })
+      result[key][variantPath] = variantValue
+    }
+
+    if (this.mode === 'response') {
+      const selected = result[key].selected
+
+      if (selected === 'undefined' || selected === undefined) {
+        return undefined
+      }
+
+      if (selected === 'null' || selected === null) {
+        return null
+      }
+
+      return result[key][selected]
     }
 
     return result
@@ -191,7 +244,7 @@ export class ResponseGenerator {
 
     let isPageSchema = true
 
-    for (let requiredKey in requiredKeys) {
+    for (let requiredKey of requiredKeys) {
       isPageSchema = requiredKey in schema
       if (!isPageSchema) break
     }
@@ -211,7 +264,7 @@ export class ResponseGenerator {
     switch (schema.type) {
       case 'string':
         if (schema.format === 'date-time') {
-          return faker.date.past()
+          return faker.date.past().toISOString().split('T')[0]
         }
         return faker.lorem.sentence()
       case 'integer':
@@ -232,16 +285,22 @@ export class ResponseGenerator {
   }
 
   private getPageSizeFromTemplate(path: string): number {
-    return (
-      Number(this.getValueFromTemplate(`${path}${SCHEMA_PAGE_SIZE_PATH}`)) ||
-      SCHEMA_PAGE_SIZE
+    return Number(
+      this.getValueFromTemplate(
+        `${path}_apish_items_settings.${SCHEMA_PAGE_SIZE_PATH}`,
+      ) ?? SCHEMA_PAGE_SIZE,
     )
   }
 
   private getTotalItemsCountFromTemplate(path: string): number {
-    return (
-      Number(this.getValueFromTemplate(`${path}${SCHEMA_ITEMS_COUNT_PATH}`)) ||
-      SCHEMA_ITEMS_COUNT
+    return Number(
+      this.getValueFromTemplate(
+        `${path}_apish_items_settings.${SCHEMA_ITEMS_COUNT_PATH}`,
+      ) ?? SCHEMA_ITEMS_COUNT,
     )
+  }
+
+  private getFullKeyPath(path: string, key: string): string {
+    return path ? `${path}.${key}` : key
   }
 }

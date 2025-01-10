@@ -1,4 +1,8 @@
-import { getNonRefSchema, getSchemaVariantPath } from "@apish/common";
+import {
+  type IPrimitiveField,
+  getNonRefSchema,
+  getSchemaVariantPath,
+} from "@apish/common";
 
 import { getSchemaType } from "@pages/main/libs/getSchemaType";
 import { isPrimitive } from "@pages/main/libs/isPrimitive";
@@ -35,15 +39,16 @@ export const OneOfField = ({
         }
 
         const type = getSchemaType(optionSchema);
-        const isPrimitiveField = isPrimitive(optionSchema);
-        const value = isPrimitiveField ? type : optionSchema.title;
+        const value: IPrimitiveField = isPrimitive(optionSchema)
+          ? (type as IPrimitiveField)
+          : (optionSchema.title ?? "");
 
         return (
           <div key={index} className="flex flex-col gap-3">
             <Radio
-              label={value}
+              label={String(value)}
               name={field}
-              value={value}
+              value={String(value)}
               onChange={(e) => {
                 onFieldChange(field, e.target.checked);
               }}
@@ -57,6 +62,8 @@ export const OneOfField = ({
               template={template}
               onFieldChange={onFieldChange}
             />
+
+            {optionSchemaError && <Alert>{optionSchemaError}</Alert>}
           </div>
         );
       })}
