@@ -178,4 +178,92 @@ export function init() {
       }
     },
   )
+
+  handle('getResponse', async (_event, { method, path, code }) => {
+    try {
+      const config = await getConfig(db)
+
+      if (!config.current_schema_id) {
+        return errorResponse("Current schema isn't selected", 400)
+      }
+
+      const response = await db
+        .table('response')
+        .where('method', '=', method)
+        .where('path', '=', path)
+        .where('code', '=', code)
+        .where('schema_id', '=', config.current_schema_id)
+        .first()
+
+      let responseId
+      if (response) {
+        responseId = response.id
+      } else {
+        const [id] = await db('response').insert({
+          method,
+          path,
+          code,
+          schema_id: config.current_schema_id,
+          updated_at: db.fn.now(),
+        })
+        responseId = id
+      }
+
+      const newResponse = await db('response')
+        .where('id', '=', responseId)
+        .first()
+
+      return successResponse(newResponse)
+    } catch (e) {
+      return errorResponse(e, 500)
+    }
+  })
+
+  handle(
+    'updateResponse',
+    async (_event, { path, method, code, ...editResponse }) => {
+      try {
+        const config = await getConfig(db)
+
+        if (!config.current_schema_id) {
+          return errorResponse("Current schema isn't selected", 400)
+        }
+
+        const response = await db
+          .table('response')
+          .where('method', '=', method)
+          .where('path', '=', path)
+          .where('code', '=', code)
+          .where('schema_id', '=', config.current_schema_id)
+          .first()
+
+        let updatedResponseId
+        if (response) {
+          await db('response')
+            .where('id', '=', response.id)
+            .update({
+              ...editResponse,
+              updated_at: db.fn.now(),
+            })
+
+          updatedResponseId = response.id
+        } else {
+          const [id] = await db('response').insert({
+            ...editResponse,
+            schema_id: config.current_schema_id,
+            updated_at: db.fn.now(),
+          })
+
+          updatedResponseId = id
+        }
+
+        const updatedResponse = await db('response')
+          .where('id', '=', updatedResponseId)
+          .first()
+        return successResponse(updatedResponse)
+      } catch (e) {
+        return errorResponse(e, 500)
+      }
+    },
+  )
 }

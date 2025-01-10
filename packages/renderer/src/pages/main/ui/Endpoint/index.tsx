@@ -1,18 +1,21 @@
 import { type OpenAPI } from "openapi-types";
 
+import { type OpenAPIResponse } from "@shared/libs/openApi/types";
 import { Accordion } from "@shared/ui/Accordion";
 import { Badge } from "@shared/ui/Badge";
 import { Text } from "@shared/ui/Text";
 
-import { getMethodColor } from "../libs/getMethodColor";
+import { getMethodColor } from "../../libs/getMethodColor";
 import { EndpointControl } from "./EndpointControl";
+import { EndpointResponse } from "./EndpointResponse";
 
 interface Props {
+  doc: OpenAPI.Document;
   path: string;
   methods: Record<string, OpenAPI.Operation>;
 }
 
-export const Endpoint = ({ path, methods }: Props) => {
+export const Endpoint = ({ doc, path, methods }: Props) => {
   return (
     <>
       {Object.entries(methods).map(([method, methodSchema]) => {
@@ -36,8 +39,18 @@ export const Endpoint = ({ path, methods }: Props) => {
             <Accordion.Panel>
               {methodSchema.responses &&
                 Object.entries(methodSchema.responses).map(
-                  ([response, responseSchema]) => {
-                    return <div>{response}</div>;
+                  ([response, responseSchema]: [string, OpenAPIResponse]) => {
+                    return (
+                      <EndpointResponse
+                        key={`${path}_${method}_${response}`}
+                        doc={doc}
+                        path={path}
+                        code={Number(response)}
+                        responseSchema={responseSchema}
+                        method={method}
+                        scope={`${path}_${method}`}
+                      />
+                    );
                   },
                 )}
             </Accordion.Panel>

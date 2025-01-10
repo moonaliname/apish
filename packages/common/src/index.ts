@@ -35,6 +35,17 @@ export interface IEndpoint {
   schema_id: null | number
 }
 
+export interface IResponse {
+  id: number
+  path: string
+  method: string
+  code: number
+  template: string
+  created_at: Date
+  updated_at: Date
+  schema_id: null | number
+}
+
 export interface ChannelMap {
   schemaUpload: {
     request: {
@@ -69,5 +80,14 @@ export interface ChannelMap {
     request: Pick<IEndpoint, 'path' | 'method'> &
       Partial<Omit<IEndpoint, AutomatedFields | 'path' | 'method'>>
     response: IEndpoint
+  }
+  getResponse: {
+    request: Pick<IResponse, 'path' | 'method' | 'code'>
+    response: IResponse
+  }
+  updateResponse: {
+    request: Pick<IResponse, 'path' | 'method' | 'code'> &
+      Partial<Omit<IResponse, AutomatedFields | 'path' | 'method' | 'code'>>
+    response: IResponse
   }
 }
