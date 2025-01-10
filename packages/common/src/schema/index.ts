@@ -6,3 +6,4 @@ export {
 } from './getValueFromTemplate.js'
 export type * from './types.js'
 export * from './config.js'
+export { getSchemaVariantPath } from './getSchemaVariantPath.js'

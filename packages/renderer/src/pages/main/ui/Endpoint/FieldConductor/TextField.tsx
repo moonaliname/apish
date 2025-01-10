@@ -4,7 +4,13 @@ import type { FieldProps } from "@pages/main/model/types";
 
 import { Input } from "@shared/ui/Input";
 
-export const TextField = ({ schema, field, title, template }: FieldProps) => {
+export const TextField = ({
+  schema,
+  field,
+  title,
+  template,
+  onFieldChange,
+}: FieldProps) => {
   return (
     <Input.Wrapper label={title}>
       <Input
@@ -18,6 +24,9 @@ export const TextField = ({ schema, field, title, template }: FieldProps) => {
           field,
           ["string", "number"],
         )}
+        onChange={(e) => {
+          onFieldChange(field, e.target.value);
+        }}
       />
     </Input.Wrapper>
   );

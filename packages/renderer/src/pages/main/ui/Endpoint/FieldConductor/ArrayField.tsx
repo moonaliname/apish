@@ -25,6 +25,7 @@ export const ArrayField = ({
   FieldConductor,
   title,
   template,
+  onFieldChange,
 }: Props) => {
   if (!("items" in schema)) {
     return null;
@@ -49,12 +50,18 @@ export const ArrayField = ({
             className="w-[70px]"
             defaultValue={SCHEMA_ITEMS_COUNT}
             label={`total`}
+            onChange={(value) => {
+              onFieldChange(`${field}${SCHEMA_ITEMS_COUNT_PATH}`, value);
+            }}
           />
           <NumberInput
             name={`${field}${SCHEMA_PAGE_SIZE_PATH}`}
             className="w-[70px]"
             defaultValue={SCHEMA_PAGE_SIZE}
             label={`page size`}
+            onChange={(value) => {
+              onFieldChange(`${field}${SCHEMA_PAGE_SIZE_PATH}`, value);
+            }}
           />
         </div>
       }
@@ -68,6 +75,7 @@ export const ArrayField = ({
               field={`${field}[0]`}
               title={title}
               template={template}
+              onFieldChange={onFieldChange}
             />
           </div>
         ) : (
@@ -81,6 +89,7 @@ export const ArrayField = ({
                   field={`${field}[0]`}
                   title={title}
                   template={template}
+                  onFieldChange={onFieldChange}
                 />
               </Accordion.Panel>
             </Accordion.Item>

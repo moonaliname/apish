@@ -4,7 +4,13 @@ import type { FieldProps } from "@pages/main/model/types";
 
 import { NativeSelect } from "@shared/ui/NativeSelect";
 
-export const SelectField = ({ schema, field, template, title }: FieldProps) => {
+export const SelectField = ({
+  schema,
+  field,
+  template,
+  title,
+  onFieldChange,
+}: FieldProps) => {
   return (
     <NativeSelect
       className="w-[180px]"
@@ -16,6 +22,9 @@ export const SelectField = ({ schema, field, template, title }: FieldProps) => {
         field,
         ["string", "number"],
       )}
+      onChange={(e) => {
+        onFieldChange(field, e.target.value);
+      }}
     />
   );
 };

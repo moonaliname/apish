@@ -1,7 +1,13 @@
-import { type OpenAPIResponse, getSchemaFromResponse } from "@apish/common";
+import {
+  IPrimitiveField,
+  type OpenAPIResponse,
+  getSchemaFromResponse,
+} from "@apish/common";
 import cn from "clsx";
 import { type OpenAPI } from "openapi-types";
 import { useRef } from "react";
+
+import { updateTemplate } from "@pages/main/libs/updateTemplate";
 
 import { EnableCode } from "@features/schema/enableCode";
 
@@ -27,7 +33,7 @@ export const EndpointResponse = ({
   responseSchema,
   method,
 }: Props) => {
-  const { data: response } = useResponseQuery({
+  const { data: response, isLoading } = useResponseQuery({
     path,
     code,
     method,
@@ -39,25 +45,27 @@ export const EndpointResponse = ({
 
   const formRef = useRef<HTMLFormElement | null>(null);
 
-  const handleChange = () => {
-    if (!formRef.current) return;
-    const data = Object.fromEntries(new FormData(formRef.current).entries());
+  const template = response?.template ? JSON.parse(response.template) : {};
+
+  const handleFieldChange = (field: string, value: IPrimitiveField) => {
     updateResponse.mutate({
       path,
       code,
       method,
-      template: JSON.stringify(data),
+      template: JSON.stringify(updateTemplate(template, field, value)),
     });
   };
 
   const { data: componentSchema, error: componentSchemaError } =
     getSchemaFromResponse(doc, responseSchema);
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   if (!componentSchema) {
     return <Alert>{componentSchemaError}</Alert>;
   }
-
-  console.log("response", response?.template && JSON.parse(response.template));
 
   return (
     <div className={cn("flex", "flex-col", "gap-1")}>
@@ -66,14 +74,15 @@ export const EndpointResponse = ({
         name={`${path}_${method}`}
         code={code}
       />
-      <form ref={formRef} onChange={handleChange}>
+      <form ref={formRef}>
         {componentSchema.type === "object" && (
           <FieldConductor
             doc={doc}
             schema={componentSchema}
             field=""
-            template={response?.template ? JSON.parse(response.template) : {}}
+            template={template}
             title=""
+            onFieldChange={handleFieldChange}
           />
         )}
       </form>

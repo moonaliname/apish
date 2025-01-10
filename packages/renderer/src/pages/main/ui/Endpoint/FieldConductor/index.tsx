@@ -1,4 +1,8 @@
-import type { ITemplate, OpenAPISchemaObject } from "@apish/common";
+import type {
+  IPrimitiveField,
+  ITemplate,
+  OpenAPISchemaObject,
+} from "@apish/common";
 import type { OpenAPI } from "openapi-types";
 
 import { getSchemaType } from "../../../libs/getSchemaType";
@@ -19,6 +23,7 @@ interface FieldConductorProps {
   field: string;
   title: string;
   template: ITemplate;
+  onFieldChange: (field: string, value: IPrimitiveField) => void;
 }
 
 export const FieldConductor = (props: FieldConductorProps) => {

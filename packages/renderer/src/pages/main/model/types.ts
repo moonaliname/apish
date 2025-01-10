@@ -1,4 +1,8 @@
-import type { ITemplate, OpenAPISchemaObject } from "@apish/common";
+import type {
+  IPrimitiveField,
+  ITemplate,
+  OpenAPISchemaObject,
+} from "@apish/common";
 import { type OpenAPI } from "openapi-types";
 
 export interface FieldProps {
@@ -7,4 +11,5 @@ export interface FieldProps {
   field: string;
   title: string;
   template: ITemplate;
+  onFieldChange: (field: string, value: IPrimitiveField) => void;
 }

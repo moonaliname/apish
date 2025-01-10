@@ -4,7 +4,12 @@ import type { FieldProps } from "@pages/main/model/types";
 
 import { Checkbox } from "@shared/ui/Checkbox";
 
-export const BooleanField = ({ field, title, template }: FieldProps) => {
+export const BooleanField = ({
+  field,
+  title,
+  template,
+  onFieldChange,
+}: FieldProps) => {
   return (
     <Checkbox
       name={field}
@@ -12,6 +17,9 @@ export const BooleanField = ({ field, title, template }: FieldProps) => {
       defaultChecked={getTypedValueFromTemplate<boolean>(template, field, [
         "boolean",
       ])}
+      onChange={(e) => {
+        onFieldChange(field, e.target.value);
+      }}
     />
   );
 };

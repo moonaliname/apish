@@ -1,6 +1,7 @@
 import type { OpenAPI } from 'openapi-types'
 import {
   getNonRefSchema,
+  getSchemaVariantPath,
   SCHEMA_ITEMS_COUNT,
   SCHEMA_ITEMS_COUNT_PATH,
   SCHEMA_PAGE_SIZE,
@@ -147,29 +148,40 @@ export class ResponseGenerator {
   }): ITemplate {
     const fullPath = `${path}.${key}.selected`
     const selected = this.getValueFromTemplate(path)
-
-    if (selected) {
-      const option = schema.find((option) => {
-        const { data: optionSchema } = getNonRefSchema(this.doc, option)
-
-        if (!optionSchema) {
-          return undefined
-        }
-
-        return optionSchema.title === selected
-      })
-      if (option) {
-        return this.generate({
-          schema: option,
-          path: fullPath,
-        })
+    const result: Record<string, { selected?: string } & Record<string, any>> =
+      {
+        [key]: {
+          selected: undefined,
+        },
       }
+
+    for (let schemaIndex = 0; schemaIndex < schema.length; schemaIndex++) {
+      const { data: optionSchema } = getNonRefSchema(
+        this.doc,
+        schema[schemaIndex],
+      )
+
+      if (!optionSchema) {
+        continue
+      }
+
+      const variantPath = getSchemaVariantPath({ schema: optionSchema })
+
+      if (schemaIndex === 0) {
+        result[key].selected = variantPath
+      }
+
+      if (optionSchema?.title && optionSchema?.title === selected) {
+        result[key].selected = selected
+      }
+
+      result[key][variantPath] = this.generate({
+        schema: optionSchema,
+        path: fullPath,
+      })
     }
 
-    return this.generate({
-      schema: faker.helpers.arrayElement(schema),
-      path: fullPath,
-    })
+    return result
   }
 
   private getIsPageSchema(schema?: OpenAPISchemaObject): boolean {

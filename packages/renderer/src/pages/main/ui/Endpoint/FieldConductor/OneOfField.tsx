@@ -1,4 +1,4 @@
-import { getNonRefSchema } from "@apish/common";
+import { getNonRefSchema, getSchemaVariantPath } from "@apish/common";
 
 import { getSchemaType } from "@pages/main/libs/getSchemaType";
 import { isPrimitive } from "@pages/main/libs/isPrimitive";
@@ -19,6 +19,7 @@ export const OneOfField = ({
   FieldConductor,
   template,
   title,
+  onFieldChange,
 }: Props) => {
   return (
     <Fieldset
@@ -39,14 +40,22 @@ export const OneOfField = ({
 
         return (
           <div key={index} className="flex flex-col gap-3">
-            <Radio label={value} name={field} value={value} />
+            <Radio
+              label={value}
+              name={field}
+              value={value}
+              onChange={(e) => {
+                onFieldChange(field, e.target.checked);
+              }}
+            />
 
             <FieldConductor
               doc={doc}
               schema={optionSchema}
               field={field}
-              title={isPrimitiveField ? "" : value}
+              title={getSchemaVariantPath({ schema: optionSchema })}
               template={template}
+              onFieldChange={onFieldChange}
             />
           </div>
         );

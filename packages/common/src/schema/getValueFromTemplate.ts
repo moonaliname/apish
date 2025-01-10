@@ -8,11 +8,16 @@ export const getValueFromTemplate = (
     if (Array.isArray(template)) {
       return template
     } else if (typeof template === 'object') {
-      if (path in template) {
-        return template[path as keyof ITemplate]
-      } else {
-        return undefined
+      let result = template
+      const segments = path.replace(/\[(\d+)]/g, '.$1').split('.')
+      for (let key of segments) {
+        if (typeof result === 'object' && result !== null && key in result) {
+          result = result[key as keyof ITemplate]
+        } else {
+          return undefined
+        }
       }
+      return result
     } else {
       return template
     }

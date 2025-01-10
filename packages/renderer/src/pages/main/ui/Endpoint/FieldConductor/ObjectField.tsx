@@ -1,4 +1,8 @@
-import type { ITemplate, OpenAPISchemaObject } from "@apish/common";
+import type {
+  IPrimitiveField,
+  ITemplate,
+  OpenAPISchemaObject,
+} from "@apish/common";
 import type { OpenAPI } from "openapi-types";
 
 import type { FieldProps } from "../../../model/types";
@@ -10,6 +14,7 @@ interface Props {
   template: ITemplate;
   title: string;
   FieldConductor: (props: FieldProps) => React.ReactNode;
+  onFieldChange: (field: string, value: IPrimitiveField) => void;
 }
 
 export const ObjectField = ({
@@ -19,6 +24,7 @@ export const ObjectField = ({
   template,
   title,
   FieldConductor,
+  onFieldChange,
 }: Props) => {
   if (!schema.properties || Object.keys(schema.properties).length == 0) {
     return null;
@@ -35,6 +41,7 @@ export const ObjectField = ({
             field={field ? `${field}.${propertyKey}` : propertyKey}
             title={title ? `${title}.${propertyKey}` : propertyKey}
             template={template}
+            onFieldChange={onFieldChange}
           />
         );
       })}

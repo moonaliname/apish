@@ -8,7 +8,7 @@ export type OpenAPISchemaObject = OpenAPIV3_1.SchemaObject
 
 export type OpenAPIReferenceObject = OpenAPIV3_1.ReferenceObject
 
-type IPrimitiveField = string | number | boolean | Date | null
+export type IPrimitiveField = string | number | boolean | Date | null
 export type ITemplate =
   | {
       [key: string]: ITemplate | Array<ITemplate> | IPrimitiveField
