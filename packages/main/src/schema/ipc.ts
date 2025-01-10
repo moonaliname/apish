@@ -7,6 +7,7 @@ import { DB } from '../shared/libs/database.js'
 import { errorResponse, successResponse } from '../shared/libs/response.js'
 import { type ISchema } from '@apish/common'
 import { preparePaths } from '../shared/libs/preparePaths.js'
+import { getConfig } from '../shared/services/config.js'
 
 export function init() {
   const db = DB.getInstance()
@@ -56,6 +57,38 @@ export function init() {
       const schemas = await db.table('schema').select('*')
 
       return successResponse(schemas)
+    } catch (e) {
+      return errorResponse(e, 500)
+    }
+  })
+
+  handle('getSchema', async (_event, { id }) => {
+    try {
+      const schema = await db.table('schema').where('id', '=', id).first()
+
+      return successResponse(schema)
+    } catch (e) {
+      return errorResponse(e, 500)
+    }
+  })
+
+  handle('getConfig', async () => {
+    try {
+      const config = await getConfig(db)
+
+      return successResponse(config)
+    } catch (e) {
+      return errorResponse(e, 500)
+    }
+  })
+
+  handle('updateConfig', async (_event, editConfig) => {
+    try {
+      const config = await getConfig(db)
+      await db.table('config').where('id', '=', config.id).update(editConfig)
+      const updatedConfig = await getConfig(db)
+
+      return successResponse(updatedConfig)
     } catch (e) {
       return errorResponse(e, 500)
     }
