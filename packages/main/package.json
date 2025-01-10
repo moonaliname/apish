@@ -1,6 +1,7 @@
 {
   "name": "@apish/main",
   "type": "module",
+  "version": "0.0.0",
   "scripts": {
     "build": "vite build",
     "typecheck": "tsc --noEmit"
@@ -16,16 +17,16 @@
     "@apish/common": "*",
     "@apish/preload": "*",
     "@apish/renderer": "*",
-    "@faker-js/faker": "9.2.0",
-    "@fastify/reply-from": "11.0.2",
+    "@faker-js/faker": "9.3.0",
+    "@fastify/reply-from": "12.0.0",
     "electron-updater": "6.3.9",
-    "fastify": "5.1.0",
+    "fastify": "5.2.1",
     "knex": "3.1.0",
     "sqlite3": "5.1.7"
   },
   "devDependencies": {
     "@apish/electron-versions": "*",
     "openapi-types": "12.1.3",
-    "vite": "5.4.10"
+    "vite": "6.0.7"
   }
 }
