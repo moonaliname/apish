@@ -38,6 +38,8 @@ export const ArrayField = ({
   }
 
   const isPrimitiveField = isPrimitive(componentSchema);
+  const itemsCountPath = getItemsCountPath(field);
+  const pageSizePath = getFieldPageSizePath(field);
 
   return (
     <Fieldset
@@ -49,15 +51,12 @@ export const ArrayField = ({
             className="w-[70px]"
             defaultValue={getTypedValueFromTemplate<number>(
               template,
-              `${field}_apish_items_settings.${SCHEMA_ITEMS_COUNT_PATH}`,
+              itemsCountPath,
               ["number"],
             )}
             label={`total`}
             onChange={(value) => {
-              onFieldChange(
-                `${field}_apish_items_settings.${SCHEMA_ITEMS_COUNT_PATH}`,
-                value,
-              );
+              onFieldChange(itemsCountPath, value);
             }}
           />
           <NumberInput
@@ -65,15 +64,12 @@ export const ArrayField = ({
             className="w-[70px]"
             defaultValue={getTypedValueFromTemplate<number>(
               template,
-              `${field}_apish_items_settings.${SCHEMA_PAGE_SIZE_PATH}`,
+              pageSizePath,
               ["number"],
             )}
             label={`page size`}
             onChange={(value) => {
-              onFieldChange(
-                `${field}_apish_items_settings.${SCHEMA_PAGE_SIZE_PATH}`,
-                value,
-              );
+              onFieldChange(pageSizePath, value);
             }}
           />
         </div>
@@ -113,3 +109,15 @@ export const ArrayField = ({
     </Fieldset>
   );
 };
+
+function getFieldPageSizePath(field: string): string {
+  return field
+    ? `${field}_apish_items_settings.${SCHEMA_PAGE_SIZE_PATH}`
+    : `apish_items_settings.${SCHEMA_PAGE_SIZE_PATH}`;
+}
+
+function getItemsCountPath(field: string): string {
+  return field
+    ? `${field}_apish_items_settings.${SCHEMA_ITEMS_COUNT_PATH}`
+    : `apish_items_settings.${SCHEMA_ITEMS_COUNT_PATH}`;
+}

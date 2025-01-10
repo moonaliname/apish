@@ -2,8 +2,12 @@ import type { ITemplate } from './types.js'
 
 export const getValueFromTemplate = (
   template: ITemplate,
-  path: string,
+  initialPath: string,
 ): ITemplate => {
+  let path = initialPath
+  if (initialPath.startsWith('[')) {
+    path = `apish_items${path}`
+  }
   if (template) {
     if (Array.isArray(template)) {
       return template
