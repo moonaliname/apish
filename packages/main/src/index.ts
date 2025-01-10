@@ -4,6 +4,7 @@ import { platform } from 'node:process'
 import updater from 'electron-updater'
 import type { AppInitConfig } from './AppInitConfig.js'
 import { createWindowManager } from './createWindowManager.js'
+import { createDBTables } from './database.js'
 
 // Used in packages/entry-point.js
 export function initApp(initConfig: AppInitConfig) {
@@ -46,7 +47,10 @@ export function initApp(initConfig: AppInitConfig) {
    */
   app
     .whenReady()
-    .then(restoreOrCreateWindow)
+    .then(() => {
+      createDBTables()
+      restoreOrCreateWindow()
+    })
     .catch((e) => console.error('Failed create window:', e))
 
   /**

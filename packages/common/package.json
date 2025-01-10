@@ -1,0 +1,17 @@
+{
+  "name": "@apish/common",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "exports": {
+    ".": {
+      "default": "./dist/index.mjs",
+      "types": "./src/index.ts"
+    }
+  },
+  "devDependencies": {
+    "@apish/electron-versions": "*"
+  }
+}

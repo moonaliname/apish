@@ -1,10 +1,23 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import { send } from '@apish/preload'
+import { IPC_PING_PATH, IPingRequest, IPingResponse } from '@apish/common'
 
 function App() {
   const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    const testFn = async () => {
+      const result = await send<IPingRequest, IPingResponse>(IPC_PING_PATH, {
+        id: 1,
+      })
+      console.log('result', result)
+    }
+
+    testFn()
+  }, [])
 
   return (
     <>

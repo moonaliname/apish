@@ -41,6 +41,7 @@ All internal names are prefixed by `@apish/*`.
 
 - [`packages/main`](packages/main) - Implementation of Electron's [**main script**](https://www.electronjs.org/docs/tutorial/quick-start#create-the-main-script-file).
 - [`packages/preload`](packages/preload) - Implementation of Electron's [**preload scripts**](https://www.electronjs.org/docs/latest/tutorial/tutorial-preload).
+- [`packages/common`](packages/common) - Common files for [**main script**] and [**renderer script**]
 
 ## How It works
 

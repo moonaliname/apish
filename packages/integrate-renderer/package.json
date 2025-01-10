@@ -1,5 +1,5 @@
 {
-  "name": "@vite-electron-builder/integrate-renderer",
+  "name": "@apish/integrate-renderer",
   "description": "",
   "main": "index.js",
   "type": "module",
