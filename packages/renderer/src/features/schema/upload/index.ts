@@ -1,1 +1,1 @@
-export { Upload } from "./ui/Upload";
+export { UploadModal } from "./ui/UploadModal";
