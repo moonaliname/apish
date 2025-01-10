@@ -20,7 +20,7 @@ export const useReloadServer = () => {
         });
       } else {
         notifications.show({
-          title: "Default notification",
+          color: "green",
           message: "Server was successfully reloaded",
         });
       }
