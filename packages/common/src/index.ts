@@ -17,18 +17,35 @@ export interface ISchema {
   updated_at: Date
 }
 
-export interface ISchemaUploadRequest {
-  file: ArrayBuffer
-  name: string
+export interface IConfig {
+  id: number
+  current_schema_id: null | number
 }
 
 export interface ChannelMap {
   schemaUpload: {
-    request: ISchemaUploadRequest
-    response: ISuccessResponse<ISchema> | IErrorResponse
+    request: {
+      file: ArrayBuffer
+      name: string
+    }
+    response: ISchema
   }
   getSchemaList: {
     request: undefined
-    response: ISuccessResponse<ISchema[]> | IErrorResponse
+    response: ISchema[]
+  }
+  getSchema: {
+    request: {
+      id: number
+    }
+    response: ISchema
+  }
+  getConfig: {
+    request: undefined
+    response: IConfig
+  }
+  updateConfig: {
+    request: Partial<Omit<IConfig, 'id'>>
+    response: IConfig
   }
 }

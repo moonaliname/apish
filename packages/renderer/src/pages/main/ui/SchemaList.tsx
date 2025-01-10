@@ -1,29 +1,28 @@
-import { ISchema } from "@apish/common";
+import type { ISchema } from "@apish/common";
 
+import { Alert } from "@shared/ui/Alert";
 import { Button } from "@shared/ui/Button";
 
-import { useLoader } from "../api/loader";
+import { useSchemasQuery } from "../api/useSchemasQuery";
 
 interface Props {
   onSelect: (schema: ISchema) => void;
 }
 
 export const SchemaList = ({ onSelect }: Props) => {
-  const { data, isLoading } = useLoader();
-
-  const schemas = !!data && "data" in data && data.data;
+  const { data: schemas, isLoading } = useSchemasQuery();
 
   return (
     <>
       {isLoading ? (
         <span>Loading...</span>
       ) : (
-        (!schemas || !schemas.length) && <div>No schemas uploaded</div>
+        (!schemas || !schemas.length) && <Alert>No schemas uploaded </Alert>
       )}
 
-      <ul className="list-none m-0 p-0">
-        {schemas &&
-          schemas.map((schema) => {
+      {schemas && (
+        <ul className="list-none m-0 p-0">
+          {schemas.map((schema) => {
             return (
               <li key={schema.id}>
                 <Button
@@ -39,7 +38,8 @@ export const SchemaList = ({ onSelect }: Props) => {
               </li>
             );
           })}
-      </ul>
+        </ul>
+      )}
     </>
   );
 };

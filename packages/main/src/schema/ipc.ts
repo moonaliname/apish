@@ -51,9 +51,10 @@ export function init() {
     }
   })
 
-  handle('getSchemaList', async (_event) => {
+  handle('getSchemaList', async () => {
     try {
       const schemas = await db.table('schema').select('*')
+
       return successResponse(schemas)
     } catch (e) {
       return errorResponse(e, 500)

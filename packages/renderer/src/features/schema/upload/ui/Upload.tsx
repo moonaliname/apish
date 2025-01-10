@@ -8,7 +8,7 @@ import { type Props as IActionProps, useAction } from "../model/action";
 type Props = IActionProps;
 
 export const Upload = (props: Props) => {
-  const { data, mutate } = useAction(props);
+  const { data, isError, error, mutate } = useAction(props);
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -42,17 +42,13 @@ export const Upload = (props: Props) => {
 
       <Input placeholder="Schema name" name="name" type="text" />
 
-      {!!data && "error" in data && (
+      {isError && (
         <Alert color="red">
-          {typeof data.error === "string"
-            ? data.error
-            : JSON.stringify(data.error)}
+          {typeof error === "string" ? error : JSON.stringify(error)}
         </Alert>
       )}
 
-      {!!data && "data" in data && (
-        <Alert color="green">Schema was succesfully uploaded</Alert>
-      )}
+      {!!data && <Alert color="green">Schema was succesfully uploaded</Alert>}
 
       <Button type="submit" className="mt-1">
         Upload

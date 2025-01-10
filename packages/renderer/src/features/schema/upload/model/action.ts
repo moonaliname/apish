@@ -1,6 +1,9 @@
-import type { ISchema, ISchemaUploadRequest } from "@apish/common";
+import type { ChannelMap, ISchema } from "@apish/common";
 import { send } from "@apish/preload";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+import { getQueryData } from "@shared/libs/getQueryData";
+import { getQueryError } from "@shared/libs/getQueryError";
 
 export interface Props {
   onSuccess: (data: ISchema) => void;
@@ -8,8 +11,10 @@ export interface Props {
 
 export const useAction = ({ onSuccess }: Props) => {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (data: ISchemaUploadRequest) => send("schemaUpload", data),
+
+  const mutationResult = useMutation({
+    mutationFn: (data: ChannelMap["schemaUpload"]["request"]) =>
+      send("schemaUpload", data),
     onSuccess: (res) => {
       if ("data" in res) {
         onSuccess(res.data);
@@ -17,4 +22,10 @@ export const useAction = ({ onSuccess }: Props) => {
       }
     },
   });
+
+  const data = getQueryData("schemaUpload", mutationResult.data);
+
+  const error = getQueryError("schemaUpload", mutationResult.data);
+
+  return { ...mutationResult, data, error, isError: !!error };
 };
