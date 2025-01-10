@@ -5,7 +5,7 @@ import type {
 } from "@apish/common";
 
 export const getQueryData = <K extends keyof ChannelMap>(
-  channel: K,
+  _channel: K,
   response?: ISuccessResponse<ChannelMap[K]["response"]> | IErrorResponse,
 ) => {
   return !!response && "data" in response ? response.data : undefined;
