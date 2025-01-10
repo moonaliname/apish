@@ -6,7 +6,11 @@ export const convertSearchPathToSchemaPath = (
   if (!searchPathSegments) return ''
   let schemaPath = ''
   for (let segment of searchPathSegments) {
-    schemaPath += `/${segment}`
+    if (segment.startsWith('{')) {
+      schemaPath += `/${segment.slice(1, -1)}`
+    } else {
+      schemaPath += `/${segment}`
+    }
   }
   return schemaPath
 }
