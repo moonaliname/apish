@@ -55,6 +55,9 @@ export const SchemaDetail = () => {
           )}
         </>
       )}
+
+      {configQuery.isError && <Alert>{configQuery.error}</Alert>}
+      {schemaQuery.isError && <Alert>{schemaQuery.error}</Alert>}
     </>
   );
 };

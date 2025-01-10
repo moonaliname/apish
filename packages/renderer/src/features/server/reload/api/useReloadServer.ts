@@ -10,10 +10,25 @@ export const useReloadServer = () => {
     mutationFn: () => {
       return send("reloadServer");
     },
-    onSuccess: () => {
+    onSuccess: (res) => {
+      const error = getQueryError("reloadServer", res);
+
+      if (error) {
+        notifications.show({
+          color: "red",
+          message: error,
+        });
+      } else {
+        notifications.show({
+          title: "Default notification",
+          message: "Server was successfully reloaded",
+        });
+      }
+    },
+    onError: () => {
       notifications.show({
-        title: "Default notification",
-        message: "Server was successfully reloaded",
+        color: "red",
+        message: "Something wrong happend",
       });
     },
   });

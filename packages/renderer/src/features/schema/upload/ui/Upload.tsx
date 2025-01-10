@@ -42,11 +42,7 @@ export const Upload = (props: Props) => {
 
       <Input placeholder="Schema name" name="name" type="text" />
 
-      {isError && (
-        <Alert color="red">
-          {typeof error === "string" ? error : JSON.stringify(error)}
-        </Alert>
-      )}
+      {isError && <Alert color="red">{error}</Alert>}
 
       {!!data && <Alert color="green">Schema was succesfully uploaded</Alert>}
 

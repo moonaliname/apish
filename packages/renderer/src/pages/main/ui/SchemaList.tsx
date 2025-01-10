@@ -4,6 +4,7 @@ import { Delete } from "@features/schema/delete";
 
 import { Alert } from "@shared/ui/Alert";
 import { Button } from "@shared/ui/Button";
+import { Loader } from "@shared/ui/Loader";
 
 import { useSchemasQuery } from "../api/useSchemasQuery";
 
@@ -12,12 +13,12 @@ interface Props {
 }
 
 export const SchemaList = ({ onSelect }: Props) => {
-  const { data: schemas, isLoading } = useSchemasQuery();
+  const { data: schemas, ...schemasQuery } = useSchemasQuery();
 
   return (
     <>
-      {isLoading ? (
-        <span>Loading...</span>
+      {schemasQuery.isLoading ? (
+        <Loader aria-label="Loading schemas" />
       ) : (
         (!schemas || !schemas.length) && <Alert>No schemas uploaded </Alert>
       )}
@@ -37,6 +38,7 @@ export const SchemaList = ({ onSelect }: Props) => {
                 >
                   {schema.name}
                 </Button>
+
                 <Delete
                   schema={{ id: schema.id, name: schema.name }}
                   onSuccess={() => {}}
@@ -46,6 +48,8 @@ export const SchemaList = ({ onSelect }: Props) => {
           })}
         </ul>
       )}
+
+      {schemasQuery.isError && <Alert>{schemasQuery.error}</Alert>}
     </>
   );
 };

@@ -12,6 +12,7 @@ import { updateTemplate } from "@pages/main/libs/updateTemplate";
 import { EnableCode } from "@features/schema/enableCode";
 
 import { Alert } from "@shared/ui/Alert";
+import { Loader } from "@shared/ui/Loader";
 
 import { useResponseQuery } from "../../api/useResponseQuery";
 import { useUpdateResponse } from "../../api/useUpdateResponse";
@@ -33,7 +34,7 @@ export const EndpointResponse = ({
   responseSchema,
   method,
 }: Props) => {
-  const { data: response, isLoading } = useResponseQuery({
+  const { data: response, ...responseQuery } = useResponseQuery({
     path,
     code,
     method,
@@ -59,12 +60,8 @@ export const EndpointResponse = ({
   const { data: componentSchema, error: componentSchemaError } =
     getSchemaFromResponse(doc, responseSchema);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!componentSchema) {
-    return <Alert>{componentSchemaError}</Alert>;
+  if (responseQuery.isLoading) {
+    return <Loader aria-label="Loading response data" />;
   }
 
   return (
@@ -74,8 +71,11 @@ export const EndpointResponse = ({
         name={`${path}_${method}`}
         code={code}
       />
+
+      {componentSchemaError && <Alert>{componentSchemaError}</Alert>}
+
       <form ref={formRef}>
-        {componentSchema.type === "object" && (
+        {componentSchema && (
           <FieldConductor
             doc={doc}
             schema={componentSchema}
@@ -86,8 +86,6 @@ export const EndpointResponse = ({
           />
         )}
       </form>
-
-      {componentSchemaError && <Alert>{componentSchemaError}</Alert>}
     </div>
   );
 };

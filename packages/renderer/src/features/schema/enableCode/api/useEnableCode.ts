@@ -1,5 +1,6 @@
 import type { ChannelMap } from "@apish/common";
 import { send } from "@apish/preload";
+import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { getQueryData } from "@shared/libs/getQueryData";
@@ -17,7 +18,14 @@ export const useEnableCode = ({ endpoint }: Props) => {
       return send("updateEndpoint", data);
     },
     onSuccess: (res) => {
-      if ("data" in res) {
+      const error = getQueryError("updateEndpoint", res);
+
+      if (error) {
+        notifications.show({
+          color: "red",
+          message: error,
+        });
+      } else {
         queryClient.invalidateQueries({
           queryKey: [
             "endpoint",
@@ -27,6 +35,12 @@ export const useEnableCode = ({ endpoint }: Props) => {
           ],
         });
       }
+    },
+    onError: () => {
+      notifications.show({
+        color: "red",
+        message: "Something wrong happend",
+      });
     },
   });
 

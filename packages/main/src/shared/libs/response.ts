@@ -11,5 +11,17 @@ export const errorResponse = (
   error: unknown,
   code: number = 500,
 ): IErrorResponse => {
-  return { error: JSON.stringify(error, null, 2), code }
+  let stringError = ''
+  if (error === 'string') {
+    stringError = error
+  } else if (error instanceof Error) {
+    stringError = error.message
+  } else {
+    stringError = JSON.stringify(error)
+  }
+
+  return {
+    error: stringError,
+    code,
+  }
 }

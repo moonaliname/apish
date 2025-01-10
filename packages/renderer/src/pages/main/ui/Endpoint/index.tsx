@@ -36,7 +36,7 @@ export const Endpoint = ({ doc, path, methods }: Props) => {
               </Text>
             </EndpointControl>
 
-            <Accordion.Panel>
+            <Accordion.Panel classNames={{ content: "flex flex-col gap-2" }}>
               {methodSchema.responses &&
                 Object.entries(methodSchema.responses).map(
                   ([response, responseSchema]: [string, OpenAPIResponse]) => {

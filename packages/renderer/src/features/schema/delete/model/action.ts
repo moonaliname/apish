@@ -1,5 +1,6 @@
 import type { ChannelMap } from "@apish/common";
 import { send } from "@apish/preload";
+import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { getQueryData } from "@shared/libs/getQueryData";
@@ -16,11 +17,24 @@ export const useAction = ({ onSuccess }: Props) => {
     mutationFn: (data: ChannelMap["deleteSchema"]["request"]) =>
       send("deleteSchema", data),
     onSuccess: (res) => {
-      if ("data" in res) {
+      const error = getQueryError("deleteSchema", res);
+
+      if (error) {
+        notifications.show({
+          color: "red",
+          message: error,
+        });
+      } else {
         onSuccess();
         queryClient.invalidateQueries({ queryKey: ["schemas"] });
         queryClient.invalidateQueries({ queryKey: ["config"] });
       }
+    },
+    onError: () => {
+      notifications.show({
+        color: "red",
+        message: "Something wrong happend",
+      });
     },
   });
 

@@ -1,5 +1,6 @@
 import type { ChannelMap } from "@apish/common";
 import { send } from "@apish/preload";
+import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { getQueryData } from "@shared/libs/getQueryData";
@@ -16,9 +17,24 @@ export const useUpdateResponse = ({ response }: Props) => {
     mutationFn: (data: ChannelMap["updateResponse"]["request"]) => {
       return send("updateResponse", data);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["response", response.path, response.method, response.code],
+    onSuccess: (res) => {
+      const error = getQueryError("updateResponse", res);
+
+      if (error) {
+        notifications.show({
+          color: "red",
+          message: error,
+        });
+      } else {
+        queryClient.invalidateQueries({
+          queryKey: ["response", response.path, response.method, response.code],
+        });
+      }
+    },
+    onError: () => {
+      notifications.show({
+        color: "red",
+        message: "Something wrong happend",
       });
     },
   });
