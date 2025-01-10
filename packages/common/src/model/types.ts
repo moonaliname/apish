@@ -39,7 +39,7 @@ export interface IResponse {
   id: number
   path: string
   method: string
-  code: number
+  code: string
   template: string
   created_at: Date
   updated_at: Date

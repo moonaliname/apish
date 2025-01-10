@@ -45,7 +45,7 @@ export const Endpoint = ({ doc, path, methods }: Props) => {
                         key={`${path}_${method}_${response}`}
                         doc={doc}
                         path={path}
-                        code={Number(response)}
+                        code={response}
                         responseSchema={responseSchema}
                         method={method}
                         scope={`${path}_${method}`}

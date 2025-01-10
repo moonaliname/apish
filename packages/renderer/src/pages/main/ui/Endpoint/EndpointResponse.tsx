@@ -3,6 +3,8 @@ import cn from "clsx";
 import { type OpenAPI } from "openapi-types";
 import { useRef } from "react";
 
+import { EnableCode } from "@features/schema/enableCode";
+
 import { Alert } from "@shared/ui/Alert";
 
 import { useResponseQuery } from "../../api/useResponseQuery";
@@ -12,7 +14,7 @@ import { FieldConductor } from "./FieldConductor";
 interface Props {
   doc: OpenAPI.Document;
   path: string;
-  code: number;
+  code: string;
   responseSchema: OpenAPIResponse;
   method: string;
   scope: string;
@@ -55,24 +57,22 @@ export const EndpointResponse = ({
     return <Alert>{componentSchemaError}</Alert>;
   }
 
+  console.log("response", response?.template && JSON.parse(response.template));
+
   return (
     <div className={cn("flex", "flex-col", "gap-1")}>
+      <EnableCode
+        endpoint={{ path, method }}
+        name={`${path}_${method}`}
+        code={code}
+      />
       <form ref={formRef} onChange={handleChange}>
         {componentSchema.type === "object" && (
           <FieldConductor
             doc={doc}
             schema={componentSchema}
             field=""
-            template={
-              response?.template
-                ? JSON.parse(response?.template)
-                : {
-                    id: 123,
-                    name: "Alina",
-                    content_type: "Podcast",
-                    alternative_names: ["123", "456"],
-                  }
-            }
+            template={response?.template ? JSON.parse(response.template) : {}}
             title=""
           />
         )}

@@ -6,7 +6,7 @@ import { getQueryData } from "@shared/libs/getQueryData";
 import { getQueryError } from "@shared/libs/getQueryError";
 
 export interface Props {
-  response: { path: string; method: string; code: number };
+  response: { path: string; method: string; code: string };
 }
 
 export const useUpdateResponse = ({ response }: Props) => {
