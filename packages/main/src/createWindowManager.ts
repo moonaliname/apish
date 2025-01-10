@@ -17,6 +17,7 @@ export function createWindowManager({
         webviewTag: false, // The webview tag is not recommended. Consider alternatives like an iframe or Electron's BrowserView. @see https://www.electronjs.org/docs/latest/api/webview-tag#warning
         preload: preload.path,
       },
+      autoHideMenuBar: true,
     })
 
     /**
