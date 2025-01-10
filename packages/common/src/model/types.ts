@@ -97,4 +97,8 @@ export interface ChannelMap {
       Partial<Omit<IResponse, AutomatedFields | 'path' | 'method' | 'code'>>
     response: IResponse
   }
+  reloadServer: {
+    request: undefined
+    response: string
+  }
 }

@@ -3,13 +3,13 @@ import { ResponseGenerator } from './generateResponse.js'
 import replyFrom from '@fastify/reply-from'
 import { getActiveSchema } from '../shared/services/schema.js'
 import { getSearchPathByRequest } from '../shared/libs/searchPaths/getSearchPathByRequest.js'
-
 import { DB } from '../shared/libs/database.js'
 import { getResponseFromSearchPath } from '../shared/libs/searchPaths/getResponseFromSearchPath.js'
 import { getSchemaFromResponse } from '../shared/libs/schema/getSchemaFromResponse.js'
 import type { IEndpoint, IResponse } from '@apish/common'
-
-const TARGET = 'http://127.0.0.1:3001'
+import { getConfig } from '../shared/services/config.js'
+import { handleOnce } from '../shared/libs/handle.js'
+import { errorResponse, successResponse } from '../shared/libs/response.js'
 
 export async function buildApi() {
   const db = DB.getInstance()
@@ -23,8 +23,10 @@ export async function buildApi() {
     },
   )
 
+  const config = await getConfig(db)
+
   await fastify.register(replyFrom, {
-    base: TARGET,
+    base: config.target_url ?? '',
   })
 
   fastify.all('*', {}, async (request, reply) => {
@@ -102,5 +104,15 @@ export async function buildApi() {
       process.exit(1)
     }
     fastify.log.info(`Server listening at ${address}`)
+  })
+
+  handleOnce('reloadServer', async () => {
+    try {
+      await fastify.close()
+      await buildApi()
+      return successResponse('Server is reloaded')
+    } catch (e) {
+      return errorResponse(e, 500)
+    }
   })
 }

@@ -15,4 +15,14 @@ function handle<K extends keyof ChannelMap>(
   return ipcMain.handle(channel, callback)
 }
 
-export { handle }
+function handleOnce<K extends keyof ChannelMap>(
+  channel: K,
+  callback: (
+    _event: Electron.IpcMainInvokeEvent,
+    message: ChannelMap[K]['request'],
+  ) => Promise<ISuccessResponse<ChannelMap[K]['response']> | IErrorResponse>,
+) {
+  return ipcMain.handleOnce(channel, callback)
+}
+
+export { handle, handleOnce }
