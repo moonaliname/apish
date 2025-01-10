@@ -11,7 +11,7 @@ import type { OpenAPIReferenceObject, OpenAPISchemaObject } from '@apish/common'
 import { getValueFromTemplate } from '@apish/common'
 import { faker } from '@faker-js/faker'
 
-type IPrimitiveField = string | number | boolean | Date | null
+type IPrimitiveField = string | number | boolean | null
 type ITemplate =
   | {
       [key: string]: ITemplate | Array<ITemplate> | IPrimitiveField
