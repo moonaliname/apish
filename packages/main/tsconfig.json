@@ -9,11 +9,8 @@
     "strict": true,
     "isolatedModules": true,
     "types": ["node"],
-    "baseUrl": ".",
-    "paths": {
-      "/@/*": ["./src/*"],
-      "@apish/*": ["../*"]
-    }
+
+    "baseUrl": "."
   },
   "include": ["src/**/*.ts", "../../types/**/*.d.ts"],
   "exclude": ["**/*.spec.ts", "**/*.test.ts"]

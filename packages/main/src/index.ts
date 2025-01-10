@@ -4,7 +4,7 @@ import { platform } from 'node:process'
 import updater from 'electron-updater'
 import type { AppInitConfig } from './AppInitConfig.js'
 import { createWindowManager } from './createWindowManager.js'
-import { createDBTables } from './database.js'
+import { createDBTables } from './shared/libs/database.js'
 
 // Used in packages/entry-point.js
 export function initApp(initConfig: AppInitConfig) {

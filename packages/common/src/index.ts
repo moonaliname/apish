@@ -1,5 +1,3 @@
-export const IPC_PING_PATH = 'schema'
-
 export interface IPingRequest {
   id: number
 }
@@ -7,4 +5,11 @@ export interface IPingRequest {
 export interface IPingResponse {
   id: number
   success: boolean
+}
+
+export interface ChannelMap {
+  ping: {
+    request: IPingRequest
+    response: IPingResponse
+  }
 }
