@@ -116,7 +116,6 @@ export function init() {
         const [id] = await db('endpoint').insert({
           method: method,
           path: path,
-          is_enabled_proxy: true,
           schema_id: config.current_schema_id,
           updated_at: db.fn.now(),
         })

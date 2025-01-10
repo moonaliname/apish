@@ -11,7 +11,7 @@ interface Props {
 
 export const useGetEndpoint = (props: Props) => {
   const queryResult = useQuery({
-    queryKey: ["endpoint", props.path, props.method],
+    queryKey: ["endpoint", "proxy", props.path, props.method],
     queryFn: () => send("getEndpoint", props),
   });
 

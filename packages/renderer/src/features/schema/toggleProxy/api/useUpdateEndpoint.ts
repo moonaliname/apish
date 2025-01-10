@@ -9,7 +9,7 @@ export interface Props {
   endpoint: { path: string; method: string };
 }
 
-export const useAction = ({ endpoint }: Props) => {
+export const useUpdateEndpoint = ({ endpoint }: Props) => {
   const queryClient = useQueryClient();
 
   const mutationResult = useMutation({
@@ -18,7 +18,7 @@ export const useAction = ({ endpoint }: Props) => {
     onSuccess: (res) => {
       if ("data" in res) {
         queryClient.invalidateQueries({
-          queryKey: ["endpoint", endpoint.path, endpoint.method],
+          queryKey: ["endpoint", "proxy", endpoint.path, endpoint.method],
         });
       }
     },

@@ -43,7 +43,7 @@ export const createDBTables = async () => {
         table.increments('id').primary()
         table.string('path')
         table.string('method')
-        table.boolean('is_enabled_proxy')
+        table.boolean('is_enabled_proxy').defaultTo(true)
         table.string('enabled_code')
         table.timestamp('created_at').defaultTo(db.fn.now())
         table.timestamp('updated_at').defaultTo(db.fn.now())
@@ -61,7 +61,7 @@ export const createDBTables = async () => {
         table.string('path')
         table.string('method')
         table.string('code')
-        table.binary('template')
+        table.binary('template').defaultTo(JSON.stringify({}))
         table.timestamp('created_at').defaultTo(db.fn.now())
         table.timestamp('updated_at').defaultTo(db.fn.now())
 
