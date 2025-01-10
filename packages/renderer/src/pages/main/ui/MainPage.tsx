@@ -7,10 +7,13 @@ import { SchemaListModal } from "./SchemaListModal";
 
 export const MainPage = () => {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 p-4">
       <div className="flex gap-3">
-        <UploadModal />
-        <SchemaListModal />
+        <div className="flex gap-1">
+          <SchemaListModal />
+          <UploadModal />
+        </div>
+
         <div className="flex gap-1">
           <UpdateUrl />
           <ReloadServer />

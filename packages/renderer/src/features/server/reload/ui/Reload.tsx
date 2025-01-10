@@ -1,4 +1,7 @@
-import { Button } from "@shared/ui/Button";
+import { IconReload } from "@tabler/icons-react";
+
+import { ActionIcon } from "@shared/ui/ActionIcon";
+import { Tooltip } from "@shared/ui/Tooltip";
 
 import { useReloadServer } from "../api/useReloadServer";
 
@@ -12,9 +15,11 @@ export const ReloadServer = () => {
 
   return (
     <form onSubmit={handleSubmit} name={`Reload server`}>
-      <Button type="submit" variant="outline">
-        Reload server
-      </Button>
+      <Tooltip label="Reload server">
+        <ActionIcon type="submit" variant="light" size="lg">
+          <IconReload style={{ width: "70%", height: "70%" }} />
+        </ActionIcon>
+      </Tooltip>
     </form>
   );
 };

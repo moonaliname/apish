@@ -1,3 +1,5 @@
+import { IconUpload } from "@tabler/icons-react";
+
 import { Alert } from "@shared/ui/Alert";
 import { Button } from "@shared/ui/Button";
 import { FileInput } from "@shared/ui/FileInput";
@@ -46,7 +48,11 @@ export const Upload = (props: Props) => {
 
       {!!data && <Alert color="green">Schema was succesfully uploaded</Alert>}
 
-      <Button type="submit" className="mt-1">
+      <Button
+        type="submit"
+        className="mt-1"
+        rightSection={<IconUpload style={{ width: "70%", height: "70%" }} />}
+      >
         Upload
       </Button>
     </form>

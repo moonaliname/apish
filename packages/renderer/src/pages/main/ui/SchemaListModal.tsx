@@ -16,7 +16,7 @@ export const SchemaListModal = () => {
         Schemas
       </Button>
 
-      <Modal opened={opened} onClose={close}>
+      <Modal opened={opened} onClose={close} title="Schemas">
         <SchemaList
           onSelect={(schema) => {
             mutate({ current_schema_id: schema.id });
