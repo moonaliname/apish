@@ -86,6 +86,7 @@ export const createDBTables = async () => {
             table.increments('id').primary()
 
             table.integer('current_schema_id').unsigned().nullable()
+            table.integer('target_url').unsigned().nullable().defaultTo(null)
             table
               .foreign('current_schema_id')
               .references('schema.id')

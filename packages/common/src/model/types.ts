@@ -22,6 +22,7 @@ export interface ISchema {
 export interface IConfig {
   id: number
   current_schema_id: null | number
+  target_url: null | string
 }
 
 export interface IEndpoint {
