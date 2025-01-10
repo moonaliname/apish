@@ -1,15 +1,30 @@
-export interface IPingRequest {
-  id: number
+export interface ISuccessResponse<T> {
+  code: number
+  data: T
 }
 
-export interface IPingResponse {
+export interface IErrorResponse {
+  code: number
+  error: string
+}
+
+export interface ISchema {
   id: number
-  success: boolean
+  name: string
+  doc: string
+  paths: string
+  created_at: Date
+  updated_at: Date
+}
+
+export interface ISchemaUploadRequest {
+  file: ArrayBuffer
+  name: string
 }
 
 export interface ChannelMap {
-  ping: {
-    request: IPingRequest
-    response: IPingResponse
+  schemaUpload: {
+    request: ISchemaUploadRequest
+    response: ISuccessResponse<ISchema> | IErrorResponse
   }
 }

@@ -1,7 +1,6 @@
-import { send } from "@apish/preload";
 import { MantineProvider, createTheme } from "@mantine/core";
 import "@mantine/core/styles.css";
-import { useEffect } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { MainPage } from "@pages/main";
 
@@ -9,22 +8,15 @@ import "./styles.css";
 
 const theme = createTheme({});
 
+const queryClient = new QueryClient();
+
 function App() {
-  useEffect(() => {
-    const testFn = async () => {
-      const result = await send("ping", {
-        id: 1,
-      });
-      console.log("result", result);
-    };
-
-    testFn();
-  }, []);
-
   return (
-    <MantineProvider theme={theme}>
-      <MainPage />
-    </MantineProvider>
+    <QueryClientProvider client={queryClient}>
+      <MantineProvider theme={theme}>
+        <MainPage />
+      </MantineProvider>
+    </QueryClientProvider>
   );
 }
 

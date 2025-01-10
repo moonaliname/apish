@@ -12,6 +12,7 @@
     }
   },
   "dependencies": {
+    "@apidevtools/swagger-parser": "10.1.0",
     "@apish/common": "*",
     "@apish/preload": "*",
     "@apish/renderer": "*",
@@ -21,6 +22,7 @@
   },
   "devDependencies": {
     "@apish/electron-versions": "*",
+    "openapi-types": "12.1.3",
     "vite": "5.4.10"
   }
 }

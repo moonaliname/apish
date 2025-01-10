@@ -1,3 +1,5 @@
+import { Upload } from "@features/schema/upload";
+
 export const MainPage = () => {
-  return <div>main page</div>;
+  return <Upload onSuccess={() => {}} />;
 };
