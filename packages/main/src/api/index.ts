@@ -7,8 +7,10 @@ import { getSearchPathByRequest } from '../shared/libs/searchPaths/getSearchPath
 import { DB } from '../shared/libs/database.js'
 import { getResponseFromSearchPath } from '../shared/libs/searchPaths/getResponseFromSearchPath.js'
 import { getSchemaFromResponse } from '../shared/libs/schema/getSchemaFromResponse.js'
+import { covertSearchPathToSchemaPath } from '../shared/libs/searchPaths/convertSearchPathToSchemaPath.js'
+import type { IEndpoint } from '@apish/common'
 
-const TARGET = 'http://127.0.0.1:3002'
+const TARGET = 'http://127.0.0.1:3001'
 
 export async function buildApi() {
   const db = DB.getInstance()
@@ -50,12 +52,24 @@ export async function buildApi() {
       paths: schemaPaths,
       request: { url: urlPath, method },
     })
-
     const responseSchema = getResponseFromSearchPath({ searchPath })
 
     const schemaObject = getSchemaFromResponse(responseSchema)
 
     if (responseSchema) {
+      const schemaPath = covertSearchPathToSchemaPath(searchPath!.segments)
+
+      const endpoint = await db
+        .table('endpoint')
+        .where('method', '=', method.toLowerCase())
+        .where('path', '=', schemaPath)
+        .where('schema_id', '=', schema.id)
+        .first<IEndpoint>()
+
+      if (!endpoint.is_enabled_proxy) {
+        return reply.from(request.raw.url)
+      }
+
       const responseGenerator = new ResponseGenerator({
         doc: JSON.parse(schema.doc),
         template: {},
@@ -66,7 +80,6 @@ export async function buildApi() {
       })
 
       return reply.status(200).send(response)
-      return reply.from(request.raw.url)
     } else {
       reply
         .status(404)
