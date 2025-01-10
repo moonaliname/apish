@@ -21,6 +21,7 @@ export const Endpoint = ({ path, methods }: Props) => {
         return (
           <Accordion.Item key={value} value={value}>
             <EndpointControl
+              endpoint={{ path, method }}
               icon={
                 <Badge classNames={{ root: getMethodColor(method) }}>
                   {method}

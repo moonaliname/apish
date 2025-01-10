@@ -93,4 +93,90 @@ export function init() {
       return errorResponse(e, 500)
     }
   })
+
+  handle('getEndpoint', async (_event, { method, path }) => {
+    try {
+      const config = await getConfig(db)
+
+      if (!config.current_schema_id) {
+        return errorResponse("Current schema isn't selected", 400)
+      }
+
+      const endpoint = await db
+        .table('endpoint')
+        .where('method', '=', method)
+        .where('path', '=', path)
+        .where('schema_id', '=', config.current_schema_id)
+        .first()
+
+      let endpointId
+      if (endpoint) {
+        endpointId = endpoint.id
+      } else {
+        const [id] = await db('endpoint').insert({
+          method: method,
+          path: path,
+          is_enabled_proxy: true,
+          schema_id: config.current_schema_id,
+          updated_at: db.fn.now(),
+        })
+        endpointId = id
+      }
+
+      const newEndpoint = await db('endpoint')
+        .where('id', '=', endpointId)
+        .first()
+
+      return successResponse(newEndpoint)
+    } catch (e) {
+      return errorResponse(e, 500)
+    }
+  })
+
+  handle(
+    'updateEndpoint',
+    async (_event, { path, method, ...editEndpoint }) => {
+      try {
+        const config = await getConfig(db)
+
+        if (!config.current_schema_id) {
+          return errorResponse("Current schema isn't selected", 400)
+        }
+
+        const endpoint = await db
+          .table('endpoint')
+          .where('method', '=', method)
+          .where('path', '=', path)
+          .where('schema_id', '=', config.current_schema_id)
+          .first()
+
+        let updatedEndpointId
+        if (endpoint) {
+          await db('endpoint')
+            .where('id', '=', endpoint.id)
+            .update({
+              ...editEndpoint,
+              updated_at: db.fn.now(),
+            })
+
+          updatedEndpointId = endpoint.id
+        } else {
+          const [id] = await db('endpoint').insert({
+            ...editEndpoint,
+            schema_id: config.current_schema_id,
+            updated_at: db.fn.now(),
+          })
+
+          updatedEndpointId = id
+        }
+
+        const updatedEndpoint = await db('endpoint')
+          .where('id', '=', updatedEndpointId)
+          .first()
+        return successResponse(updatedEndpoint)
+      } catch (e) {
+        return errorResponse(e, 500)
+      }
+    },
+  )
 }

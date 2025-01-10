@@ -39,12 +39,7 @@ export const SchemaDetail = () => {
                   Record<string, OpenAPI.Operation>,
                 ]) => {
                   return (
-                    <Endpoint
-                      key={path}
-                      methods={pathSchema}
-                      path={path}
-                      doc={doc}
-                    />
+                    <Endpoint key={path} methods={pathSchema} path={path} />
                   );
                 },
               )}

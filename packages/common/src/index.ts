@@ -1,3 +1,5 @@
+type AutomatedFields = 'id' | 'created_at' | 'updated_at'
+
 export interface ISuccessResponse<T> {
   code: number
   data: T
@@ -20,6 +22,17 @@ export interface ISchema {
 export interface IConfig {
   id: number
   current_schema_id: null | number
+}
+
+export interface IEndpoint {
+  id: number
+  path: string
+  method: string
+  is_enabled_proxy: boolean
+  enabled_code: string
+  created_at: Date
+  updated_at: Date
+  schema_id: null | number
 }
 
 export interface ChannelMap {
@@ -45,7 +58,16 @@ export interface ChannelMap {
     response: IConfig
   }
   updateConfig: {
-    request: Partial<Omit<IConfig, 'id'>>
+    request: Partial<Omit<IConfig, AutomatedFields>>
     response: IConfig
+  }
+  getEndpoint: {
+    request: Pick<IEndpoint, 'path' | 'method'>
+    response: IEndpoint
+  }
+  updateEndpoint: {
+    request: Pick<IEndpoint, 'path' | 'method'> &
+      Partial<Omit<IEndpoint, AutomatedFields | 'path' | 'method'>>
+    response: IEndpoint
   }
 }
