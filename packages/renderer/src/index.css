@@ -3,3 +3,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.windowMenu {
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  width: 100%;
+  background-color: var(--mantine-color-gray-0);
+}
+
+.draggableWindowMenu {
+  -webkit-app-region: drag;
+}

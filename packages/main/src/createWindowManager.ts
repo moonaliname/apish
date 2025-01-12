@@ -1,6 +1,7 @@
 import type { AppInitConfig } from './AppInitConfig.js'
 import { BrowserWindow } from 'electron'
 import { init as initSchemaIpc } from './schema/ipc.js'
+import { init as initWindowIpc } from './window/ipc.js'
 import { buildApi } from './api/index.js'
 
 export function createWindowManager({
@@ -18,6 +19,7 @@ export function createWindowManager({
         preload: preload.path,
       },
       autoHideMenuBar: true,
+      frame: false,
     })
 
     /**
@@ -39,6 +41,7 @@ export function createWindowManager({
       await browserWindow.loadFile(renderer.path)
     }
 
+    initWindowIpc(browserWindow)
     initSchemaIpc()
 
     buildApi()

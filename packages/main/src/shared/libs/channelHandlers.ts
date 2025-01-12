@@ -7,10 +7,17 @@ import type {
 
 function handle<K extends keyof ChannelMap>(
   channel: K,
-  callback: (
-    _event: Electron.IpcMainInvokeEvent,
-    message: ChannelMap[K]['request'],
-  ) => Promise<ISuccessResponse<ChannelMap[K]['response']> | IErrorResponse>,
+  callback: ChannelMap[K] extends { sync: true }
+    ? (
+        _event: Electron.IpcMainInvokeEvent,
+        message: ChannelMap[K]['request'],
+      ) => ISuccessResponse<ChannelMap[K]['response']> | IErrorResponse
+    : (
+        _event: Electron.IpcMainInvokeEvent,
+        message: ChannelMap[K]['request'],
+      ) => Promise<
+        ISuccessResponse<ChannelMap[K]['response']> | IErrorResponse
+      >,
 ) {
   return ipcMain.handle(channel, callback)
 }

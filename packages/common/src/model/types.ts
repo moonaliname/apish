@@ -97,8 +97,21 @@ export interface ChannelMap {
       Partial<Omit<IResponse, AutomatedFields | 'path' | 'method' | 'code'>>
     response: IResponse
   }
-  reloadServer: {
+  windowMinimize: {
     request: undefined
-    response: string
+    response: void
+  }
+  windowToggleMaximize: {
+    request: undefined
+    response: void
+  }
+  windowGetIsMaximized: {
+    request: undefined
+    response: boolean
+    sync: true
+  }
+  windowClose: {
+    request: undefined
+    response: void
   }
 }
