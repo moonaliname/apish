@@ -5,8 +5,11 @@ import { getActiveSchema } from '../shared/services/schema.js'
 import { getSearchPathByRequest } from '../shared/libs/searchPaths/getSearchPathByRequest.js'
 import { DB } from '../shared/libs/database.js'
 import { getResponseFromSearchPath } from '../shared/libs/searchPaths/getResponseFromSearchPath.js'
-import { getSchemaFromResponse } from '../shared/libs/schema/getSchemaFromResponse.js'
-import type { IEndpoint, IResponse } from '@apish/common'
+import {
+  getSchemaFromResponse,
+  type IEndpoint,
+  type IResponse,
+} from '@apish/common'
 import { getConfig } from '../shared/services/config.js'
 import { handleOnce } from '../shared/libs/channelHandlers.js'
 import { errorResponse, successResponse } from '../shared/libs/response.js'
@@ -55,7 +58,8 @@ export async function buildApi() {
     })
     const responseSchema = getResponseFromSearchPath({ searchPath })
 
-    const schemaObject = getSchemaFromResponse(responseSchema)
+    const { data: schemaObject, error: schemaObjectError } =
+      getSchemaFromResponse(JSON.parse(schema.doc), responseSchema)
 
     if (responseSchema) {
       const endpoint = await db
