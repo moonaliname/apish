@@ -44,10 +44,12 @@ export class ResponseGenerator {
     schema: initialSchema,
     path,
     pagination,
+    propertyKey,
   }: {
     schema?: OpenAPISchemaObject | OpenAPIReferenceObject
     path: string
     pagination?: { totalItems: number; pageSize: number }
+    propertyKey?: string
   }): ITemplate {
     const { data: schema } = getNonRefSchema(this.doc, initialSchema)
 
@@ -60,12 +62,16 @@ export class ResponseGenerator {
         key: 'anyOf',
         schema: schema.anyOf,
         path,
+        pagination,
+        propertyKey,
       })
     } else if (schema.oneOf) {
       return this.processOfArraySchema({
         key: 'oneOf',
         schema: schema.oneOf,
         path,
+        pagination,
+        propertyKey,
       })
     } else if (schema.type === 'array') {
       const pageSize =
@@ -126,24 +132,8 @@ export class ResponseGenerator {
         for (let key in schema.properties) {
           const propertyPath = this.getFullKeyPath(path, key)
 
-          if (isPageSchema) {
-            const itemsKeyPath = this.getFullKeyPath(path, 'items')
-            const totalItems = this.getTotalItemsCountFromTemplate(itemsKeyPath)
-            const pageSize = this.getPageSizeFromTemplate(itemsKeyPath)
-
-            if (['total', 'page', 'size', 'pages'].includes(key)) {
-              obj['total'] = totalItems
-              obj['page'] = faker.number.int({
-                min: 0,
-                max: Math.round(totalItems / pageSize),
-              })
-              obj['size'] = pageSize
-              obj['pages'] = Math.round(totalItems / pageSize)
-            }
-          }
-
           let pagination
-          if (isPageSchema && key === 'items') {
+          if (isPageSchema) {
             const itemsKeyPath = this.getFullKeyPath(path, 'items')
 
             pagination = {
@@ -156,7 +146,9 @@ export class ResponseGenerator {
             schema: schema.properties[key],
             path: propertyPath,
             pagination,
+            propertyKey: key,
           })
+
           if (
             newValue &&
             typeof newValue == 'object' &&
@@ -176,7 +168,27 @@ export class ResponseGenerator {
 
       return obj
     } else {
-      const templateValue = this.getValueFromTemplate(path)
+      let templateValue = this.getValueFromTemplate(path)
+
+      if (pagination) {
+        switch (propertyKey) {
+          case 'total':
+            templateValue = pagination.totalItems
+            break
+          case 'page':
+            templateValue = faker.number.int({
+              min: 0,
+              max: Math.round(pagination.totalItems / pagination.pageSize),
+            })
+          case 'size':
+            templateValue = pagination.pageSize
+          case 'pages':
+            templateValue = Math.round(
+              pagination.totalItems / pagination.pageSize,
+            )
+        }
+      }
+
       return templateValue !== undefined
         ? templateValue
         : this.generatePrimitiveValue(schema)
@@ -187,10 +199,14 @@ export class ResponseGenerator {
     key,
     schema,
     path,
+    pagination,
+    propertyKey,
   }: {
     key: T
     schema: Exclude<OpenAPISchemaObject[T], undefined>
     path: string
+    pagination?: { totalItems: number; pageSize: number }
+    propertyKey?: string
   }): ITemplate {
     const fullPath = `${path}.${key}`
     const selected = this.getValueFromTemplate(`${fullPath}.selected`)
@@ -225,6 +241,8 @@ export class ResponseGenerator {
       const variantValue = this.generate({
         schema: optionSchema,
         path: `${fullPath}.${variantPath}`,
+        pagination,
+        propertyKey,
       })
       result[key][variantPath] = variantValue
     }
