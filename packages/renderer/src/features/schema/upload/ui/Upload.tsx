@@ -51,7 +51,7 @@ export const Upload = (props: Props) => {
       <Button
         type="submit"
         className="mt-1"
-        rightSection={<IconUpload style={{ width: "70%", height: "70%" }} />}
+        rightSection={<IconUpload className="w-9/12 h-9/12" />}
       >
         Upload
       </Button>

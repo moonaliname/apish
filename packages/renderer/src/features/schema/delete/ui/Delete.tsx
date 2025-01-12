@@ -1,6 +1,8 @@
 import { ISchema } from "@apish/common";
+import { IconTrash } from "@tabler/icons-react";
 
-import { Button } from "@shared/ui/Button";
+import { ActionIcon } from "@shared/ui/ActionIcon";
+import { Tooltip } from "@shared/ui/Tooltip";
 
 import { type Props as IActionProps, useAction } from "../model/action";
 
@@ -18,9 +20,16 @@ export const Delete = ({ schema, ...rest }: Props) => {
 
   return (
     <form onSubmit={handleSubmit} name={`Delete schema ${schema.name}`}>
-      <Button type="submit" color="red" variant="subtle">
-        Delete
-      </Button>
+      <Tooltip label="Delete">
+        <ActionIcon
+          type="submit"
+          color="red"
+          variant="subtle"
+          aria-label="Delete"
+        >
+          <IconTrash className="w-9/12 h-9/12" />
+        </ActionIcon>
+      </Tooltip>
     </form>
   );
 };

@@ -13,7 +13,7 @@ export const UploadModal = () => {
     <>
       <Tooltip label="Upload new">
         <ActionIcon onClick={() => open()} variant="light" size="lg">
-          <IconUpload style={{ width: "70%", height: "70%" }} />
+          <IconUpload className="w-9/12 h-9/12" />
         </ActionIcon>
       </Tooltip>
       <Modal opened={opened} onClose={close} title="Upload new">

@@ -14,9 +14,9 @@ export const ToggleMaximize = () => {
       onClick={() => toggleMaximize()}
     >
       {isMaximized ? (
-        <IconWindowMinimize style={{ width: "70%", height: "70%" }} />
+        <IconWindowMinimize className="w-9/12 h-9/12" />
       ) : (
-        <IconWindowMaximize style={{ width: "70%", height: "70%" }} />
+        <IconWindowMaximize className="w-9/12 h-9/12" />
       )}
     </ActionIcon>
   );

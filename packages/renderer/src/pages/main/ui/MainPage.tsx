@@ -2,6 +2,7 @@ import { UploadModal } from "@features/schema/upload";
 import { ReloadServer } from "@features/server/reload";
 import { UpdateUrl } from "@features/server/updateUrl";
 
+import { Title } from "@shared/ui/Title";
 import { WindowMenu } from "@shared/ui/WindowMenu";
 
 import { SchemaDetail } from "./SchemaDetail";
@@ -12,7 +13,9 @@ export const MainPage = () => {
     <>
       <header className="windowMenu">
         <div className="draggableWindowMenu">
-          <span className="ps-4 font-medium">Apish</span>
+          <Title size="h4" className="ps-4 py-1">
+            Apish
+          </Title>
         </div>
         <WindowMenu />
       </header>

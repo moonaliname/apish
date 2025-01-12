@@ -16,7 +16,7 @@ export const WindowMenu = () => {
           send("windowMinimize");
         }}
       >
-        <IconMinus style={{ width: "70%", height: "70%" }} />
+        <IconMinus className="w-9/12 h-9/12" />
       </ActionIcon>
 
       <ToggleMaximize />
@@ -29,7 +29,7 @@ export const WindowMenu = () => {
           send("windowClose");
         }}
       >
-        <IconX style={{ width: "70%", height: "70%" }} />
+        <IconX className="w-9/12 h-9/12" />
       </ActionIcon>
     </div>
   );
