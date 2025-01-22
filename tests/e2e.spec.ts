@@ -229,9 +229,9 @@ test.describe('Preload context should be exposed', async () => {
     })
   })
 
-  test.describe(`send should be exposed`, async () => {
+  test.describe(`invoke should be exposed`, async () => {
     test('with same type`', async ({ page }) => {
-      const type = await page.evaluate(() => typeof globalThis[btoa('send')])
+      const type = await page.evaluate(() => typeof globalThis[btoa('invoke')])
       expect(type).toEqual('function')
     })
 
@@ -243,7 +243,7 @@ test.describe('Preload context should be exposed', async () => {
       const testString = btoa(`${Date.now() * Math.random()}`)
       const expectedValue = btoa(testString)
       const value = await page.evaluate(
-        async (str) => await globalThis[btoa('send')]('test', str),
+        async (str) => await globalThis[btoa('invoke')]('test', str),
         testString,
       )
       expect(value).toEqual(expectedValue)
