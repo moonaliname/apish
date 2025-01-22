@@ -16,6 +16,7 @@ export const ToggleProxy = (props: Props) => {
   return (
     <Tooltip label="Toggle proxy">
       <Checkbox
+        aria-label="Toggle proxy"
         checked={Boolean(endpointQuery.data?.is_enabled_proxy)}
         onChange={(e) => {
           updateEndpoint.mutate({

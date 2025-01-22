@@ -12,7 +12,12 @@ export const UploadModal = () => {
   return (
     <>
       <Tooltip label="Upload new">
-        <ActionIcon onClick={() => open()} variant="light" size="lg">
+        <ActionIcon
+          onClick={() => open()}
+          variant="light"
+          size="lg"
+          aria-label="Upload new"
+        >
           <IconUpload className="w-9/12 h-9/12" />
         </ActionIcon>
       </Tooltip>

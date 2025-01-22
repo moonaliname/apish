@@ -16,7 +16,12 @@ export const ReloadServer = () => {
   return (
     <form onSubmit={handleSubmit} name={`Reload server`}>
       <Tooltip label="Reload server">
-        <ActionIcon type="submit" variant="light" size="lg">
+        <ActionIcon
+          type="submit"
+          variant="light"
+          size="lg"
+          aria-label="Reload server"
+        >
           <IconReload className="w-9/12 h-9/12" />
         </ActionIcon>
       </Tooltip>
