@@ -1,10 +1,10 @@
-import pkgJson from '../renderer/package.json'
+import pkgJson from '../renderer/package.json' with { type: 'json' }
 import * as fs from 'node:fs'
 
 const step = createStepLogger()
 
 await step(
-  'Changing renderer package name to "@vite-electron-builder/renderer"',
+  'Changing renderer package name to "@apish/renderer"',
   changeRendererPackageName,
 )
 
@@ -19,10 +19,10 @@ await step(
 )
 
 function changeRendererPackageName() {
-  if (pkgJson?.name === '@vite-electron-builder/renderer') {
+  if (pkgJson?.name === '@apish/renderer') {
     return
   }
-  pkgJson.name = '@vite-electron-builder/renderer'
+  pkgJson.name = '@apish/renderer'
   savePkg()
 }
 

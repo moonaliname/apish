@@ -18,7 +18,7 @@
     "start": "node packages/dev-mode.js",
     "typecheck": "npm run typecheck -ws --if-present",
     "create-renderer": "cd packages && npm create vite@latest renderer",
-    "integrate-renderer": "npm start --workspace @vite-electron-builder/integrate-renderer",
+    "integrate-renderer": "npm start --workspace @apish/integrate-renderer",
     "init": "npm run create-renderer && npm run integrate-renderer && npm install"
   },
   "devDependencies": {
