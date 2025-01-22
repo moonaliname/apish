@@ -114,4 +114,8 @@ export interface ChannelMap {
     request: undefined
     response: void
   }
+  reloadServer: {
+    request: undefined
+    response: string
+  }
 }
