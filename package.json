@@ -1,6 +1,7 @@
 {
   "name": "apish",
   "description": "Application for mocking API, using swagger.json",
+  "author": "Shy Vlogger <shyvloggerme@gmail.com>",
   "version": "1.0.0",
   "private": true,
   "type": "module",
