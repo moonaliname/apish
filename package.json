@@ -1,7 +1,7 @@
 {
   "name": "apish",
   "description": "Application for mocking API, using swagger.json",
-  "version": "2.0.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "main": "packages/entry-point.js",
@@ -19,7 +19,8 @@
     "typecheck": "npm run typecheck -ws --if-present",
     "create-renderer": "cd packages && npm create vite@latest renderer",
     "integrate-renderer": "npm start --workspace @apish/integrate-renderer",
-    "init": "npm run create-renderer && npm run integrate-renderer && npm install"
+    "init": "npm run create-renderer && npm run integrate-renderer && npm install",
+    "release": "electron-builder"
   },
   "devDependencies": {
     "@npmcli/map-workspaces": "4.0.2",
