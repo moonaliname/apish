@@ -13,7 +13,7 @@
     }
   },
   "dependencies": {
-    "@apidevtools/swagger-parser": "10.1.0",
+    "@apidevtools/swagger-parser": "10.1.1",
     "@apish/common": "*",
     "@apish/preload": "*",
     "@apish/renderer": "*",
