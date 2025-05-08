@@ -27,7 +27,7 @@
     "@npmcli/map-workspaces": "4.0.2",
     "@playwright/test": "^1.51.1",
     "@types/node": "22.15.7",
-    "electron": "34.2.0",
+    "electron": "36.2.0",
     "electron-builder": "^26.0.12",
     "glob": "11.0.2",
     "globals": "16.0.0",
