@@ -4,6 +4,10 @@ This project is based on **[this template](https://github.com/cawa-93/vite-elect
 The main purpose of this app is to ease the process of developing frontend applications, by uploading swagger schema and mocking responses.
 You might ask: "Dude, what about MSW?" and I'll answer: "Sure thing, but I have UI."
 
+![Снимок экрана 2025-05-09 154144](https://github.com/user-attachments/assets/c594ad49-7d08-4a7d-a1b1-542846bff2b0)
+
+![Снимок экрана 2025-05-09 154058](https://github.com/user-attachments/assets/8dddd1e0-8d7a-4dae-a76c-cee205458e0f)
+
 ❤️ **If you like this app, give a ⭐**
 
 ## Features
